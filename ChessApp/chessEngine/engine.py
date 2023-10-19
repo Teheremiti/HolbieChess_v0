@@ -60,19 +60,23 @@ class IA:
     #    return value
     
     def square_trades(self, board, square):
-        # Get all the pieces that are attacking a square
+    # Get all the pieces that are attacking a square
         trade = 0
-        w_attackers = board.attackers(self.white, square)
+        w_attackers = board.attackers(chess.WHITE, square)
         for attacker in w_attackers:
             piece_value = self.get_piece_value(board.piece_at(attacker))
-            trade += piece_value if piece_value is not None else 0
+            if piece_value is not None:
+                trade += piece_value
 
-        b_attackers = board.attackers(self.black, square)
+        b_attackers = board.attackers(chess.BLACK, square)
         for attacker in b_attackers:
             piece_value = self.get_piece_value(board.piece_at(attacker))
-            trade -= piece_value if piece_value is not None else 0
+            if piece_value is not None:
+                trade -= piece_value
 
+        print("trade_value = {} for the square {}".format(trade, square))
         return trade
+
 
 
                     
@@ -105,15 +109,22 @@ class IA:
             # Scan through all squares on the board
             piece = board.piece_at(i)
             if piece != None:
-                trade = self.square_trades(board, i)
                 # Add value for white pieces and subtract for black pieces
                 if piece.color == self.white:
+                    #if self.square_trades(board, i) is True:
+                    #    value += 30
+                    #else:
+                    #    value -= 30
                     if i in center_squares:
                         value += 20
                     elif i in almost_center_squares:
                         value += 10
                     value += self.get_piece_value(piece)
                 else:
+                    #if self.square_trades(board, i) is True:
+                    #    value -= 30
+                    #else:
+                    #    value += 30
                     if i in center_squares:
                         value -= 20
                     elif i in almost_center_squares:
@@ -123,38 +134,56 @@ class IA:
                         value += 30
                     else:
                         value -= 30
+        print(value)
         return value
     
     def choose_move(self, board, colour_to_play):
         # Choose move function
         # Returns the best move
         best_move = None
-        if colour_to_play == False:
-            best_value = 9876
+        if colour_to_play is True:
+            best_value = -float('inf')
         else:
-            best_value = -9876
-        
+            best_value = float('inf')
+
         for move in board.legal_moves:
-            # Create potential board
             board.push(move)
-            # Evaluate the board
-            board_value = self.evaluate_board(board)
-            print (board_value)
-            # Keep value while resetting the board to original state
+            score = self.minimax(board, 1, False)
             board.pop()
-            if colour_to_play == False:
-                if board_value < best_value:
-                # If the move is better than the best move, it becomes the new best move
-                    best_value = board_value
+            if colour_to_play == chess.WHITE:
+                if score > best_value:
+                    best_value = score
                     best_move = move
-            if colour_to_play == True:
-                if board_value > best_value:
-                    # If the move is better than the best move, it becomes the new best move
-                    best_value = board_value
+            elif colour_to_play == chess.BLACK:
+                if score < best_value:
+                    best_value = score
                     best_move = move
-        print("best move:", best_move)
-        print("best value:", best_value)
+
         return best_move
+    
+    def minimax(self, board, depth, maximizing_player):
+        if depth == 0 or board.is_game_over():
+            return self.evaluate_board(board)
+
+        if maximizing_player:
+            best_score = -float('inf')
+            for move in board.legal_moves:
+                board.push(move)
+                current_score = self.minimax(board, depth - 1, False)  # Switch to the opponent's turn
+                board.pop()
+                best_score = max(current_score, best_score)
+            return best_score
+        else:
+            best_score = float('inf')
+            for move in board.legal_moves:
+                board.push(move)
+                current_score = self.minimax(board, depth - 1, True)  # Switch back to the player's turn
+                board.pop()
+                best_score = min(current_score, best_score)
+            return best_score
+
+            
+        
         
 
 def validity_check(board):
