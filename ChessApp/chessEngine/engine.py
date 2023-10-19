@@ -67,17 +67,19 @@ class IA:
         # Choose move function
         # Returns the best move
         best_move = None
-        best_value = -9876
+        if colour_to_play == False:
+            best_value = 9876
+        else:
+            best_value = -9876
+        
         for move in board.legal_moves:
             # Create potential board
             board.push(move)
             # Evaluate the board
             board_value = self.evaluate_board(board)
-            print(board_value)
             # Keep value while resetting the board to original state
             board.pop()
             if colour_to_play == False:
-                best_value = 9876
                 if board_value < best_value:
                 # If the move is better than the best move, it becomes the new best move
                     best_value = board_value
@@ -87,6 +89,8 @@ class IA:
                     # If the move is better than the best move, it becomes the new best move
                     best_value = board_value
                     best_move = move
+        print("best move:", best_move)
+        print("best value:", best_value)
         return best_move
         
 
@@ -118,7 +122,6 @@ try:
         # Loop the game until it's over
         user_move = validity_check(board)
         board.push_san(user_move)
-        print(board)
         if board.is_game_over():
             break
         if board.turn == chess.WHITE:
