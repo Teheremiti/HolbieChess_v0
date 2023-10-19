@@ -38,8 +38,8 @@ class IA:
             self.queen: self.queen_value,
             self.king: self.king_value,
         }
-
-        # Assign proper valuez to pieces
+        
+        # Assign proper values to pieces
         piece_value = piece_values.get(piece.piece_type, 0)
 
         # Turn the value negative for black
@@ -48,6 +48,35 @@ class IA:
 
         return piece_value
     
+    #def check_piece_development(self, board, square):
+    #    value = 0
+    #   piece_at_square = board.piece_at(square)
+    #    if piece_at_square is not None:
+    #        if piece_at_square.moved:
+    #            if piece_at_square.piece_type == chess.PAWN:
+    #                value = 5
+    #            else:
+    #                value = 10
+    #    return value
+    
+    def square_trades(self, board, square):
+        # Get all the pieces that are attacking a square
+        trade = 0
+        w_attackers = board.attackers(self.white, square)
+        for attacker in w_attackers:
+            piece_value = self.get_piece_value(board.piece_at(attacker))
+            trade += piece_value if piece_value is not None else 0
+
+        b_attackers = board.attackers(self.black, square)
+        for attacker in b_attackers:
+            piece_value = self.get_piece_value(board.piece_at(attacker))
+            trade -= piece_value if piece_value is not None else 0
+
+        return trade
+
+
+                    
+                    
     def evaluate_board(self, board):
         # Evaluate board function
         # Returns the board value
@@ -76,6 +105,7 @@ class IA:
             # Scan through all squares on the board
             piece = board.piece_at(i)
             if piece != None:
+                trade = self.square_trades(board, i)
                 # Add value for white pieces and subtract for black pieces
                 if piece.color == self.white:
                     if i in center_squares:
@@ -89,6 +119,10 @@ class IA:
                     elif i in almost_center_squares:
                         value -= 10
                     value -= self.get_piece_value(piece)
+                    if self.square_trades(board, i) is True:
+                        value += 30
+                    else:
+                        value -= 30
         return value
     
     def choose_move(self, board, colour_to_play):
@@ -147,7 +181,7 @@ ia = IA()
 
 try:
     #while not board.is_game_over():
-    for _ in range(5):
+    for _ in range(15):
         # Loop the game until it's over
         user_move = validity_check(board)
         board.push_san(user_move)
