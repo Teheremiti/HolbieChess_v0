@@ -52,14 +52,42 @@ class IA:
         # Evaluate board function
         # Returns the board value
         value = 0
+        center_squares = [
+            chess.E4,
+            chess.D4,
+            chess.E5,
+            chess.D5
+        ]
+        almost_center_squares = [
+            chess.C3,
+            chess.C4,
+            chess.C5,
+            chess.C6,
+            chess.D3,
+            chess.D6,
+            chess.E3,
+            chess.E6,
+            chess.F3,
+            chess.F4,
+            chess.F5,
+            chess.F6
+        ]
         for i in range(64):
             # Scan through all squares on the board
             piece = board.piece_at(i)
             if piece != None:
                 # Add value for white pieces and subtract for black pieces
                 if piece.color == self.white:
+                    if i in center_squares:
+                        value += 20
+                    elif i in almost_center_squares:
+                        value += 10
                     value += self.get_piece_value(piece)
                 else:
+                    if i in center_squares:
+                        value -= 20
+                    elif i in almost_center_squares:
+                        value -= 10
                     value -= self.get_piece_value(piece)
         return value
     
@@ -77,6 +105,7 @@ class IA:
             board.push(move)
             # Evaluate the board
             board_value = self.evaluate_board(board)
+            print (board_value)
             # Keep value while resetting the board to original state
             board.pop()
             if colour_to_play == False:
