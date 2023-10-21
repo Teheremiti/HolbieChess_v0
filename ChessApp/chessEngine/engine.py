@@ -79,28 +79,6 @@ class IA:
  #           return True
  #       else:
  #           return False
- 
-    def check_capture(self, board, move):
-        initial_material_balance = self.evaluate_board(board)
-
-        if board.is_capture(move):
-            # Initialize trade with the material value of the captured piece
-            trade = 0
-            captured_piece = board.piece_at(move.to_square)
-            if captured_piece is not None:  # Check if a piece is captured
-                piece_value = self.get_piece_value(captured_piece)
-            if piece_value is not None:
-                trade += piece_value
-            temp_board = board.copy()
-            temp_board.push(move)
-            final_material_balance = self.evaluate_board(board)
-            board.pop()
-            
-            if final_material_balance > initial_material_balance:
-                return True
-            else:
-                return False
-                    
                     
     def evaluate_board(self, board):
         # Evaluate board function
@@ -131,7 +109,7 @@ class IA:
             piece = board.piece_at(i)
             if piece != None:
                 # Add value for white pieces and subtract for black pieces
-                if piece.color == chess.WHITE:
+                if piece.color == self.white:
                     if i in center_squares:
                         value += 10
                     elif i in almost_center_squares:
@@ -141,7 +119,7 @@ class IA:
                     #    value = 100
                     #elif self.square_trades(board, i) is False:
                     #    value = -10000
-                elif piece.color == chess.BLACK:
+                elif piece.color == self.black:
                     if i in center_squares:
                         value -= 10
                     elif i in almost_center_squares:
@@ -184,16 +162,11 @@ class IA:
         return best_move
     
     def minimax(self, board, depth, maximizing_player):
-        current_score = 0
         if depth == 0 or board.is_game_over():
             return self.evaluate_board(board)
         if maximizing_player:
             best_score = -float('inf')
             for move in board.legal_moves:
-                if ia.check_capture(board, move):
-                    current_score += 1000
-                else:
-                    current_score -= -1000
                 board.push(move)
                 current_score = self.minimax(board, depth - 1, False)  # Switch to the opponent's turn
                 board.pop()
@@ -202,10 +175,6 @@ class IA:
         else:
             best_score = float('inf')
             for move in board.legal_moves:
-                if ia.check_capture(board, move):
-                    current_score += -1000
-                else:
-                    current_score -= +1000
                 board.push(move)
                 current_score = self.minimax(board, depth - 1, True)  # Switch back to the player's turn
                 board.pop()
