@@ -1,6 +1,7 @@
 import chess
 import chess.engine
 import json
+import chess.pgn
 
 stockfish_path = "/usr/games/stockfish"
 
@@ -22,12 +23,6 @@ class IA:
         self.rook_value = 50
         self.queen_value = 90
         self.king_value = 900
-
-    def make_move(self, board):
-        # Move choosing function
-        result = self.engine.play(board, chess.engine.Limit(time=0.1))
-        move = result.move
-        return move
     
     def get_piece_value(self, piece):
     # Assign values to piece objects
@@ -79,7 +74,21 @@ class IA:
  #           return True
  #       else:
  #           return False
-                    
+    def check_capture(self, board, move):
+        initial_material_balance = self.evaluate_board(board)
+
+        if board.is_capture(move):
+            # Make a copy of the board to test the move
+            temp_board = board.copy()
+            temp_board.push(move)
+            final_material_balance = self.evaluate_board(temp_board)  # Evaluate the temporary board
+            if final_material_balance > initial_material_balance:
+                return True
+            else:
+                return False
+
+        return False  # If the move is not a capture, return False
+                        
     def evaluate_board(self, board):
         # Evaluate board function
         # Returns the board value
@@ -157,31 +166,44 @@ class IA:
                 if score < best_value:
                     best_value = score
                     best_move = move
-        print ("best move is:", best_move)
-        print("and its score is :", best_value)
+        print(best_move)
+        print(best_value)
         return best_move
     
     def minimax(self, board, depth, maximizing_player):
         if depth == 0 or board.is_game_over():
             return self.evaluate_board(board)
+        
         if maximizing_player:
             best_score = -float('inf')
             for move in board.legal_moves:
-                board.push(move)
-                current_score = self.minimax(board, depth - 1, False)  # Switch to the opponent's turn
-                board.pop()
+                temp_board = board.copy()
+                temp_board.push(move)
+                print(ia.check_capture(board, move))
+                if ia.check_capture(board, move):
+                    # Handle the capture move differently (by adding a bonus score)
+                    current_score = self.evaluate_board(board)
+                    current_score += 1000
+                else:
+                    current_score = self.minimax(board, depth - 1, False)
                 best_score = max(current_score, best_score)
+            print("best_score = ", best_score)
             return best_score
         else:
             best_score = float('inf')
             for move in board.legal_moves:
-                board.push(move)
-                current_score = self.minimax(board, depth - 1, True)  # Switch back to the player's turn
-                board.pop()
+                temp_board = board.copy()
+                temp_board.push(move)
+                if ia.check_capture(board, move):
+                    # Handle the capture move differently (by adding a bonus score)
+                    current_score = self.evaluate_board(board)
+                    current_score -= 1000
+                else:
+                    current_score = self.minimax(board, depth - 1, True)
                 best_score = min(current_score, best_score)
+            print("best score = ", best_score)
             return best_score
-
-            
+         
     def read_from_json(self, board):
         json_file_path = "last_move.json"
         with open(json_file_path, "r") as json_file_r:
@@ -202,46 +224,60 @@ class IA:
         
         
 
-def validity_check(board):
-    while True:
-        try:
-            # Get human move (from command line for now) and checks for its validity
-            # Also checks for wrong input:
-            usr_input = ia.read_from_json(board)
-            # Gets san value for input type
-            san_move = usr_input
-            uci_move = board.parse_san(san_move)
-            if uci_move in board.legal_moves:
-                return usr_input
-            else:
-                print("Illegal move, try again")
-        except chess.IllegalMoveError:
-            print("Illegal move, please try again")
-        except ValueError:
-            print("caps sensitive input, usage: $ e4d5")
+    def validity_check(board):
+        while True:
+            try:
+                # Get human move (from command line for now) and checks for its validity
+                # Also checks for wrong input:
+                usr_input = ia.read_from_json(board)
+                # Gets san value for input type
+                san_move = usr_input
+                uci_move = board.parse_san(san_move)
+                if uci_move in board.legal_moves:
+                    return usr_input
+                else:
+                    print("Illegal move, try again")
+            except chess.IllegalMoveError:
+                print("Illegal move, please try again")
+            except ValueError:
+                print("caps sensitive input, usage: $ e4d5")
 
 board = chess.Board()
+board.push_san("e4")
+board.push_san("f5")
+board.push_san("b3")
+board.push_san("d5")
+
 ia = IA()
+game_fens = []
 
 try:
-    for _ in range(5):
-        # Loop the game until it's over
-        #user_move = ia.read_from_json(board)  # Get the move from JSON
-        if board.fen() == chess.STARTING_FEN:
-            user_move = "e2e4"
-        else:
-            user_move = ia.choose_move(board, board.turn)
-        board.push_san(str(user_move))  # Push the user's move
-        if board.is_game_over():
-            break
-        if board.turn == chess.WHITE:
-            colour_to_play = chess.WHITE
-        else:
-            colour_to_play = chess.BLACK
-        move = ia.choose_move(board, colour_to_play)
-        print("AI's move:", move)
-        board.push(move)
-        print(board)
+    with open("game_fens.json", "w") as f:
+        for _ in range(1):
+            # Loop the game until it's over
+            # user_move = ia.read_from_json(board)  # Get the move from JSON
+            if board.fen() == chess.STARTING_FEN:
+                user_move = "e2e4"
+            else:
+                user_move = ia.choose_move(board, board.turn)
+            print(board)
+            board.push_san(str(user_move))  # Push the user's move
+            if board.is_game_over():
+                break
+            if board.turn == chess.WHITE:
+                colour_to_play = chess.WHITE
+            else:
+                colour_to_play = chess.BLACK
+            move = ia.choose_move(board, colour_to_play)
+            
+            print("AI's move:", move)
+            board.push(move)
+            print(board)
+            game_fens.append(board.fen())
+            
+            json.dump(game_fens,f)
+    
+    
 except KeyboardInterrupt:
     pass
 finally:
