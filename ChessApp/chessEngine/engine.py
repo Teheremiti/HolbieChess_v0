@@ -39,7 +39,7 @@ class IA:
         piece_value = piece_values.get(piece.piece_type, 0)
 
         # Turn the value negative for black
-        if piece.color == self.black:
+        if piece.color == chess.BLACK:
             piece_value = -piece_value
 
         return piece_value
@@ -76,20 +76,29 @@ class IA:
  #           return False
     def check_capture(self, board, move):
         initial_material_balance = self.evaluate_board(board)
-
         if board.is_capture(move):
-            # Make a copy of the board to test the move
-            temp_board = board.copy()
-            temp_board.push(move)
-            final_material_balance = self.evaluate_board(temp_board)  # Evaluate the temporary board
-            if final_material_balance > initial_material_balance:
-                return True
-            else:
-                return False
+            from_piece = board.piece_at(move.from_square)
+            to_piece = board.piece_at(move.to_square)
+        
+            if from_piece is not None and to_piece is not None:
+                capturing_piece = self.get_piece_value(from_piece)
+                captured_piece = self.get_piece_value(to_piece)
+                if board.turn is chess.WHITE:
+                    final_material_balance = initial_material_balance - captured_piece + capturing_piece
+                elif board.turn is chess.BLACK:
+                    final_material_balance = initial_material_balance + captured_piece - capturing_piece
+                if board.turn is chess.WHITE:
+                    #print("BLACK ca rentre dans le true du check capture")
+                    if final_material_balance <= initial_material_balance:
+                        return True
+                else:
+                    #print("WHITE")
+                    if final_material_balance >= initial_material_balance:
+                        return True
 
         return False  # If the move is not a capture, return False
                         
-    def evaluate_board(self, board):
+    def evaluate_board(self, board, bonus_score=0):
         # Evaluate board function
         # Returns the board value
         value = 0
@@ -118,22 +127,29 @@ class IA:
             piece = board.piece_at(i)
             if piece != None:
                 # Add value for white pieces and subtract for black pieces
-                if piece.color == self.white:
+                if piece.color == chess.WHITE:
                     if i in center_squares:
-                        value += 10
-                    elif i in almost_center_squares:
                         value += 5
+                    elif i in almost_center_squares:
+                        value += 2
                     value += self.get_piece_value(piece)
+                    #print(bonus_score) if bonus_score > 0 else None
+                    if bonus_score > 0:
+                        value += 50
                     #if self.square_trades(board, i) is True:
                     #    value = 100
                     #elif self.square_trades(board, i) is False:
                     #    value = -10000
-                elif piece.color == self.black:
+                    #print("white value = ", value)
+                elif piece.color == chess.BLACK:
+                    bonus_score = -bonus_score
                     if i in center_squares:
-                        value -= 10
-                    elif i in almost_center_squares:
                         value -= 5
-                    value -= self.get_piece_value(piece)
+                    elif i in almost_center_squares:
+                        value -= 2
+                    value += self.get_piece_value(piece)
+                    if bonus_score < 0:
+                        value -= 50
                     #if self.square_trades(board, i) is True:
                     #    value = -100
                     #elif self.square_trades(board, i) is False:
@@ -142,7 +158,6 @@ class IA:
                     #    value += 30
                     #else:
                     #    value -= 30
-        
         return value
     
     def choose_move(self, board, colour_to_play):
@@ -158,11 +173,11 @@ class IA:
             board.push(move)
             score = self.minimax(board, 1, colour_to_play)
             board.pop()
-            if colour_to_play == chess.WHITE:
+            if colour_to_play is chess.WHITE:
                 if score > best_value:
                     best_value = score
                     best_move = move
-            elif colour_to_play == chess.BLACK:
+            elif colour_to_play is chess.BLACK:
                 if score < best_value:
                     best_value = score
                     best_move = move
@@ -172,39 +187,42 @@ class IA:
     
     def minimax(self, board, depth, maximizing_player):
         if depth == 0 or board.is_game_over():
-            return self.evaluate_board(board)
+            return ia.evaluate_board(board)
         
+        best_scoreb = float('inf')
+        best_scorew = -float('inf')
         if maximizing_player:
-            best_score = -float('inf')
             for move in board.legal_moves:
                 temp_board = board.copy()
                 temp_board.push(move)
-                print(ia.check_capture(board, move))
+        #print(ia.check_capture(board, move))
+        #print(ia.check_capture(board, move))
                 if ia.check_capture(board, move):
                     # Handle the capture move differently (by adding a bonus score)
-                    current_score = self.evaluate_board(board)
-                    current_score += 1000
+                    current_score = self.evaluate_board(board, 1000)
                 else:
-                    current_score = self.minimax(board, depth - 1, False)
-                best_score = max(current_score, best_score)
-            print("best_score = ", best_score)
-            return best_score
+                    current_score = self.minimax(board, depth - 1, chess.WHITE)
+                best_scorew = max(current_score, best_scorew)
+        #print("best score for white = ", best_score)
+            return best_scorew
         else:
-            best_score = float('inf')
             for move in board.legal_moves:
                 temp_board = board.copy()
                 temp_board.push(move)
+                #print(ia.check_capture(board, move))
                 if ia.check_capture(board, move):
                     # Handle the capture move differently (by adding a bonus score)
-                    current_score = self.evaluate_board(board)
-                    current_score -= 1000
+                    current_score = self.evaluate_board(board, 1000)
                 else:
-                    current_score = self.minimax(board, depth - 1, True)
-                best_score = min(current_score, best_score)
-            print("best score = ", best_score)
-            return best_score
+                    current_score = self.minimax(board, depth - 1, chess.BLACK)
+                    #print("current score for black = ", current_score)
+                best_scoreb = min(current_score, best_scoreb)
+                #print("best score final for black = ", best_scoreb)
+                #print("best score for black = ", best_score)
+               
+            return best_scoreb
          
-    def read_from_json(self, board):
+    def read_from_json(self):
         json_file_path = "last_move.json"
         with open(json_file_path, "r") as json_file_r:
             last_move_data = json.load(json_file_r)
@@ -243,39 +261,34 @@ class IA:
                 print("caps sensitive input, usage: $ e4d5")
 
 board = chess.Board()
-board.push_san("e4")
-board.push_san("f5")
-board.push_san("b3")
-board.push_san("d5")
+board.push_san("e2e4")
+board.push_san("d7d5")
+board.push_san("b1c3")
 
 ia = IA()
 game_fens = []
-
 try:
     with open("game_fens.json", "w") as f:
-        for _ in range(1):
+        for _ in range(2):
             # Loop the game until it's over
             # user_move = ia.read_from_json(board)  # Get the move from JSON
-            if board.fen() == chess.STARTING_FEN:
-                user_move = "e2e4"
-            else:
-                user_move = ia.choose_move(board, board.turn)
-            print(board)
+            
+            user_move = ia.choose_move(board, board.turn)
+            print("white moved en dessous")
             board.push_san(str(user_move))  # Push the user's move
+            game_fens.append(str((board.peek())))
+            print(board)
             if board.is_game_over():
                 break
-            if board.turn == chess.WHITE:
-                colour_to_play = chess.WHITE
-            else:
-                colour_to_play = chess.BLACK
-            move = ia.choose_move(board, colour_to_play)
+            move = ia.choose_move(board, board.turn)
             
             print("AI's move:", move)
             board.push(move)
+            print("black moved en dessous")
             print(board)
-            game_fens.append(board.fen())
+            game_fens.append(str((board.peek())))
             
-            json.dump(game_fens,f)
+        json.dump(game_fens,f)
     
     
 except KeyboardInterrupt:
