@@ -17,11 +17,11 @@ class IA:
         self.king = chess.PieceType(6)
         self.white = chess.WHITE
         self.black = chess.BLACK
-        self.pawn_value = 10
-        self.knight_value = 30
-        self.bishop_value = 30
-        self.rook_value = 50
-        self.queen_value = 90
+        self.pawn_value = 30
+        self.knight_value = 70
+        self.bishop_value = 70
+        self.rook_value = 100
+        self.queen_value = 500
         self.king_value = 900
     
     def get_piece_value(self, piece):
@@ -55,25 +55,22 @@ class IA:
     #                value = 10
     #    return value
     
- #   def square_trades(self, board, square):
- #   # Get all the pieces that are attacking a square
- #       trade = 0
- #       w_attackers = board.attackers(chess.WHITE, square)
- #       for attacker in w_attackers:
- #           piece_value = self.get_piece_value(board.piece_at(attacker))
- #           if piece_value is not None:
- #               trade += piece_value
-#
- #       b_attackers = board.attackers(chess.BLACK, square)
- #       for attacker in b_attackers:
- #           piece_value = self.get_piece_value(board.piece_at(attacker))
- #           if piece_value is not None:
- #               trade -= piece_value
-#
- #       if trade > 0:
- #           return True
- #       else:
- #           return False
+    def is_queen_safe(self, board, square):
+        queen = board.piece_at(square)
+        
+        if queen is None or queen.piece_type != chess.QUEEN:
+            return False # If not a queen, no function
+        for attackers_square in board.attackers(not queen.color, square):
+            if board.piece_at(attackers_square).piece_type != chess.KING:
+                return False # Queen is attacked
+        for defenders_square in board.attackers(queen.color, square):
+            if board.piece_at(defenders_square).piece_type != chess.KING:
+                return True # Queen is defended
+        king_square = board.king(queen.color)
+        if king_square and chess.square_distance(king_square, square) <= 1:
+            return True # If queen close to her king, Queen happy
+        return False # Defaults to undefended
+    
     def check_capture(self, board, move):
         initial_material_balance = self.evaluate_board(board)
         if board.is_capture(move):
@@ -88,12 +85,10 @@ class IA:
                 elif board.turn is chess.BLACK:
                     final_material_balance = initial_material_balance + captured_piece - capturing_piece
                 if board.turn is chess.WHITE:
-                    #print("BLACK ca rentre dans le true du check capture")
-                    if final_material_balance <= initial_material_balance:
+                    if final_material_balance >= initial_material_balance:
                         return True
                 else:
-                    #print("WHITE")
-                    if final_material_balance >= initial_material_balance:
+                    if final_material_balance <= initial_material_balance:
                         return True
 
         return False  # If the move is not a capture, return False
@@ -125,39 +120,26 @@ class IA:
         for i in range(64):
             # Scan through all squares on the board
             piece = board.piece_at(i)
+        
             if piece != None:
                 # Add value for white pieces and subtract for black pieces
                 if piece.color == chess.WHITE:
                     if i in center_squares:
-                        value += 5
+                        value += 20
                     elif i in almost_center_squares:
-                        value += 2
+                        value += 8
                     value += self.get_piece_value(piece)
-                    #print(bonus_score) if bonus_score > 0 else None
                     if bonus_score > 0:
-                        value += 50
-                    #if self.square_trades(board, i) is True:
-                    #    value = 100
-                    #elif self.square_trades(board, i) is False:
-                    #    value = -10000
-                    #print("white value = ", value)
+                        value += 80
                 elif piece.color == chess.BLACK:
                     bonus_score = -bonus_score
                     if i in center_squares:
-                        value -= 5
+                        value -= 20
                     elif i in almost_center_squares:
-                        value -= 2
+                        value -= 9
                     value += self.get_piece_value(piece)
                     if bonus_score < 0:
-                        value -= 50
-                    #if self.square_trades(board, i) is True:
-                    #    value = -100
-                    #elif self.square_trades(board, i) is False:
-                    #    value = +10000
-                    #if self.square_trades(board, i) is True:
-                    #    value += 30
-                    #else:
-                    #    value -= 30
+                        value -= 80
         return value
     
     def choose_move(self, board, colour_to_play):
@@ -168,24 +150,43 @@ class IA:
             best_value = -float('inf')
         else:
             best_value = float('inf')
+            
+        early_game_threshold = 1 if colour_to_play is chess.WHITE else 2
 
         for move in board.legal_moves:
-            board.push(move)
-            score = self.minimax(board, 1, colour_to_play)
-            board.pop()
-            if colour_to_play is chess.WHITE:
-                if score > best_value:
-                    best_value = score
-                    best_move = move
-            elif colour_to_play is chess.BLACK:
-                if score < best_value:
-                    best_value = score
-                    best_move = move
+            #Check if the current position is a checkmate
+                if board.fullmove_number <= early_game_threshold and ('q' in board.san(move) or "Q" in board.san(move)):
+                # Skip queen moves in the early game
+                    continue
+                board.push(move)
+                # IL VEUT TJR PAS VOIR LE MATE
+                if board.is_checkmate() and board.turn == chess.WHITE:
+                    print("checkmate noir")
+                    best_move = move  # White wins
+                    best_value = -1000000000
+                    board.pop()
+                    break
+                elif board.is_checkmate() and board.turn == chess.BLACK:
+                    print("checkmate blanc")
+                    best_value = 1000000000
+                    best_move = move  # Black wins
+                    board.pop()
+                    break
+                score = self.minimax(board, 2, colour_to_play)
+                board.pop()
+                if colour_to_play is chess.WHITE:
+                    if score > best_value:
+                        best_value = score
+                        best_move = move
+                elif colour_to_play is chess.BLACK:
+                    if score < best_value:
+                        best_value = score
+                        best_move = move
         print(best_move)
         print(best_value)
         return best_move
     
-    def minimax(self, board, depth, maximizing_player):
+    def minimax(self, board, depth, maximizing_player, mate=0):
         if depth == 0 or board.is_game_over():
             return ia.evaluate_board(board)
         
@@ -195,27 +196,42 @@ class IA:
             for move in board.legal_moves:
                 temp_board = board.copy()
                 temp_board.push(move)
-        #print(ia.check_capture(board, move))
-        #print(ia.check_capture(board, move))
                 if ia.check_capture(board, move):
                     # Handle the capture move differently (by adding a bonus score)
-                    current_score = self.evaluate_board(board, 1000)
+                    current_score = self.evaluate_board(temp_board, 1000)
                 else:
-                    current_score = self.minimax(board, depth - 1, chess.WHITE)
+                    current_score = self.minimax(temp_board, depth - 1, chess.WHITE)
+                if temp_board.piece_at(move.to_square).piece_type == chess.QUEEN:
+                    if self.is_queen_safe(temp_board, move.to_square):
+                        current_score += 40
+                    else:
+                        current_score -= 40  # Add a bonus score for moves that protect the queen
+                if mate and board.turn == chess.WHITE:
+                    current_score = 100000
+                elif mate and board.turn == chess.BLACK:
+                    current_score = -100000
                 best_scorew = max(current_score, best_scorew)
         #print("best score for white = ", best_score)
             return best_scorew
+        
         else:
             for move in board.legal_moves:
                 temp_board = board.copy()
                 temp_board.push(move)
-                #print(ia.check_capture(board, move))
                 if ia.check_capture(board, move):
                     # Handle the capture move differently (by adding a bonus score)
-                    current_score = self.evaluate_board(board, 1000)
+                    current_score = self.evaluate_board(temp_board, 1000)
                 else:
-                    current_score = self.minimax(board, depth - 1, chess.BLACK)
-                    #print("current score for black = ", current_score)
+                    current_score = self.minimax(temp_board, depth - 1, chess.BLACK)
+                if temp_board.piece_at(move.to_square).piece_type == chess.QUEEN:
+                    if self.is_queen_safe(temp_board, move.to_square):
+                        current_score -= 40
+                    else:
+                        current_score += 40   # Add a bonus score for moves that protect the queen
+                if mate and board.turn == chess.WHITE:
+                    current_score = 100000
+                elif mate and board.turn == chess.BLACK:
+                    current_score = -100000
                 best_scoreb = min(current_score, best_scoreb)
                 #print("best score final for black = ", best_scoreb)
                 #print("best score for black = ", best_score)
@@ -239,8 +255,7 @@ class IA:
         with open(json_file_path, "w") as json_file_w:
             json.dump(last_move_data, json_file_w)
         print(f"Last move played: {move.uci()} has been saved to {json_file_path}.")
-        
-        
+
 
     def validity_check(board):
         while True:
@@ -262,21 +277,22 @@ class IA:
 
 board = chess.Board()
 board.push_san("e2e4")
-board.push_san("d7d5")
-board.push_san("b1c3")
+board.push_san("e7e5")
+board.push_san("f1c4")
+board.push_san("a7a6")
+board.push_san("d1f3")
 
 ia = IA()
 game_fens = []
 try:
     with open("game_fens.json", "w") as f:
-        for _ in range(2):
+        for i in range(3):
             # Loop the game until it's over
             # user_move = ia.read_from_json(board)  # Get the move from JSON
-            
             user_move = ia.choose_move(board, board.turn)
             print("white moved en dessous")
             board.push_san(str(user_move))  # Push the user's move
-            game_fens.append(str((board.peek())))
+            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
             print(board)
             if board.is_game_over():
                 break
@@ -286,7 +302,7 @@ try:
             board.push(move)
             print("black moved en dessous")
             print(board)
-            game_fens.append(str((board.peek())))
+            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
             
         json.dump(game_fens,f)
     
