@@ -1,0 +1,106 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+body main {
+    display: flex;
+    width: 100%;
+}
+
+body banner {
+    background: slategrey;
+    width: 12%;
+}
+
+body banner ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+body banner li {
+    width: 100%;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+body banner li:hover {
+    background-color: mediumaquamarine;
+    cursor: pointer;
+}
+
+body .common {
+    width: 100%;
+}
+
+body .common .game {
+    background-color: white;
+    margin-top: 2rem;
+    display: flex;
+    width: 100%;
+}
+
+body #board {
+    margin-left: 8rem;
+    width: 550px;
+}
+
+body .play {
+    height: 550px;
+    margin-left: 12rem;
+    margin-right: 2rem;
+    font-size: large;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+body .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 120px;
+    justify-content: space-around;
+}
+
+body .buttons .button {
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 100%;
+    padding: 12px 0;
+    text-align: center;
+}
+
+body .buttons .button:hover {
+    background-color: mediumaquamarine;
+    cursor: pointer;
+}
+
+body .articles h2 {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+    text-align: center;
+}
+
+body .articles ul {
+    list-style-type: none;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+body .articles li {
+    background-color: mediumaquamarine;
+    width: 35%;
+    height: 120px;
+    margin: 1rem 0;
+}

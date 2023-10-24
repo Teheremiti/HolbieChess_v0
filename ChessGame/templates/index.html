@@ -1,129 +1,83 @@
-<!-- Render template for the chess app -->
+<!-- Template for the chess app -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Holbie Chess</title>
   <link rel="stylesheet"
     href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
     integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU"
     crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="../static/styles/header.css">
+  <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
+  <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
+  <script src="../static/scripts/script.js"></script>
+</head>
+
 <body>
-  <div id="board" style="width: 400px"></div>
+  <!-- Header -->
+  <header>
+    <div class="homepage">
+      <div class="logo"></div>
+      <h1> Holbie Chess </h1>
+    </div>
+    <div class="user">
+      <!-- searchbar here -->
+      <!-- user profile pic here -->
+    </div>
+  </header>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
-        crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
-        integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
-        crossorigin="anonymous"></script>
-  <script>
-    var board;
-    var game = new Chess();
-    var isGameOver = false;
+  <main>
 
-    function onDragStart (source, piece, position, orientation) {
-      if (game.in_checkmate() === true || game.in_draw() === true || isGameOver === true ||
-          (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-          (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-        return false;
-      }
-    }
+    <!-- Side banner -->
+    <banner>
+      <ul>
+        <li>Play</li>
+        <li>Achievements</li>
+        <li>Friends</li>
+        <li>News</li>
+        <li>About us</li>
+      </ul>
+    </banner>
 
-    /*function makeBestMove () {
-      $.ajax({
-        url: '/move',
-        type: 'POST',
-        data: {
-          move: 'best'
-        },
-        success: function(response) {
-          board.position(game.fen());
-          renderMoveHistory(game.history());
-          if (response.game_over) {
-            isGameOver = true;
-            alert('Game over');
-          }
-        },
-        error: function(error) {
-          console.log('Error: ' + error.responseText);
-        }
-      });
-    }*/
+    <!-- Main page -->
+    <div class="common">
 
-    /*function renderMoveHistory (moves) {
-      var historyElement = $('#move-history').empty();
-      historyElement.empty();
-      historyElement.html('<span>Move History:</span><br>');
+      <div class="game">
+        <div id="board"></div>
+        <!--<div class="history"></div> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+          integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
+          crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
+          integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
+          crossorigin="anonymous"></script>
 
-      moves.forEach((move, index) => {
-        var moveNumber = Math.floor(index / 2) + 1;
-          if (index % 2 === 0) {
-      // Display White's move
-          historyElement.append('<br>' + moveNumber + '. ' + move);
-        } else {
-      // Display Black's move
-          historyElement.append(' ' + move);
-        }
-      });
-      historyElement.scrollTop(historyElement[0].scrollHeight);
-    }*/
+        <div class="play">
+          <h2> Let's play ! </h2>
+          <span class="buttons">
+            <p class="button"> 1v1 </p>
+            <p class="button"> Computer </p>
+          </span>
+        </div>
+      </div>
 
-    var onDrop = function (source, target) {
-      var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q'
-      });
+      <div class="articles">
+        <h2> Follow the latest news </h2>
+        <ul>
+          <li><article>Article1</article></li>
+          <li><article>Article2</article></li>
+          <li><article>Article3</article></li>
+          <li><article>Article4</article></li>
+          <li><article>Article5</article></li>
+        </ul>
+      </div>
+    </div>
 
-      removeGreySquares();
-      if (move === null) return 'snapback';
-      //renderMoveHistory(game.history());
-      //window.setTimeout(makeBestMove, 250);
-    };
-
-    var onSnapEnd = function () {
-      board.position(game.fen());
-    };
-
-    var removeGreySquares = function () {
-      $('#board .square-55d63').css('background', '');
-    };
-
-    var greySquare = function (square) {
-      var squareEl = $('#board .square-' + square);
-      
-      var background = '#a9a9a9';
-      if (squareEl.hasClass('black-3c85d') === true) {
-        background = '#696969';
-      }
-
-      squareEl.css('background', background);
-    };
-
-    var onDragMove = function (oldPos, newPos) {
-      var square = newPos;
-      removeGreySquares();
-      
-      var moves = game.moves({
-        square: square,
-        verbose: true
-      });
-
-      for (var i = 0; i < moves.length; i++) {
-        greySquare(moves[i].to);
-      }
-    };
-
-    board = ChessBoard('board', {
-      draggable: true,
-      position: 'start',
-      onDragStart: onDragStart,
-      onDrop: onDrop,
-      onMouseoutSquare: removeGreySquares,
-      onSnapEnd: onSnapEnd,
-      onDragMove: onDragMove
-    });
-  </script>
+  </main>
 </body>
+<footer>
+  <p> Made with ♡ by Teheremiti & Tristan </p>
+</footer>
 </html>
