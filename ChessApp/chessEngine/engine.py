@@ -3,12 +3,9 @@ import chess.engine
 import json
 import chess.pgn
 
-stockfish_path = "/usr/games/stockfish"
-
 class IA:
     # init IA class
     def __init__(self):
-        self.engine = chess.engine.SimpleEngine.popen_uci(stockfish_path)
         self.pawn = chess.PieceType(1)
         self.knight = chess.PieceType(2)
         self.bishop = chess.PieceType(3)
@@ -172,7 +169,7 @@ class IA:
                     best_move = move  # Black wins
                     board.pop()
                     break
-                score = self.minimax(board, 2, colour_to_play)
+                score = self.minimax(board, 1, colour_to_play)
                 board.pop()
                 if colour_to_play is chess.WHITE:
                     if score > best_value:
@@ -250,8 +247,8 @@ class IA:
     def save_to_json(self, move):
         json_file_path = "last_move.json"
         last_move_data = {
-            "last_move": move.uci()
-        }
+                "last_move": move.uci()
+            }
         with open(json_file_path, "w") as json_file_w:
             json.dump(last_move_data, json_file_w)
         print(f"Last move played: {move.uci()} has been saved to {json_file_path}.")
@@ -262,7 +259,7 @@ class IA:
             try:
                 # Get human move (from command line for now) and checks for its validity
                 # Also checks for wrong input:
-                usr_input = ia.read_from_json(board)
+                usr_input = ia.read_from_json()
                 # Gets san value for input type
                 san_move = usr_input
                 uci_move = board.parse_san(san_move)
@@ -276,20 +273,14 @@ class IA:
                 print("caps sensitive input, usage: $ e4d5")
 
 board = chess.Board()
-board.push_san("e2e4")
-board.push_san("e7e5")
-board.push_san("f1c4")
-board.push_san("a7a6")
-board.push_san("d1f3")
 
 ia = IA()
 game_fens = []
 try:
     with open("game_fens.json", "w") as f:
-        for i in range(3):
-            # Loop the game until it's over
-            # user_move = ia.read_from_json(board)  # Get the move from JSON
-            user_move = ia.choose_move(board, board.turn)
+        while not board.is_game_over(): # Loop the game until it's over
+            user_move = ia.read_from_json()  # Get the move from JSON
+            #user_move = input("Enter your move: ")
             print("white moved en dessous")
             board.push_san(str(user_move))  # Push the user's move
             game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
@@ -297,6 +288,7 @@ try:
             if board.is_game_over():
                 break
             move = ia.choose_move(board, board.turn)
+            ia.save_to_json(move)  # Save the move to JSON
             
             print("AI's move:", move)
             board.push(move)
@@ -310,4 +302,4 @@ try:
 except KeyboardInterrupt:
     pass
 finally:
-    ia.engine.quit()
+    print("bien ouej")
