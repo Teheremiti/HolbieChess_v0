@@ -11,19 +11,23 @@
   <link rel="stylesheet" type="text/css" href="../static/styles/header.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
-  <script src="../static/scripts/script.js"></script>
+  <script type="module" src="../static/scripts/script.js"></script>
 </head>
 
 <body>
   <!-- Header -->
   <header>
     <div class="homepage">
-      <div class="logo"></div>
+      <div class="logo">
+        <img src="../img/holbielogo.png" alt="holbielogo">
+      </div>
       <h1> Holbie Chess </h1>
     </div>
     <div class="user">
-      <!-- searchbar here -->
-      <!-- user profile pic here -->
+      <div class="searchbar"></div>
+      <div class="usericon">
+        <a href={{ url_for('register') }}><img src='../img/usericon.png' alt="usericon"></a>
+      </div>
     </div>
   </header>
 
