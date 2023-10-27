@@ -3,6 +3,9 @@
 }
 
 header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     background: mediumaquamarine;
     display: flex;
     justify-content: space-between;
@@ -14,23 +17,47 @@ header {
 header .homepage {
     display: flex;
     align-items: center;
-    padding-left: 1.5rem;
+    padding-left: 1rem;
 }
 
 header .logo {
-    background-color: tomato;
-    width: 3rem;
-    height: 3rem;
+    width: 3.5rem;
+    height: 3.5rem;
     border-radius: 50%;
 }
 
+header .logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 header h1 {
-    padding-left: 2rem;
+    padding-left: 1rem;
 }
 
 header .user {
-    background-color: tomato;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     height: 100%;
     width: 25%;
     justify-self: end;
+    padding-right: 2rem;
+}
+
+header .user .usericon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    position: relative;
+}
+
+header .user .usericon:hover {
+    background-color: rgb(134, 226, 195);
+}
+
+header .usericon img {
+    max-width: 100%;
+    max-height: 100%;
+    transform: translateX(5%) translateY(5%);
 }
