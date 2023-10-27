@@ -2,49 +2,25 @@ document.addEventListener("DOMContentLoaded", () => {
   var board;
   var game = new Chess();
   var isGameOver = false;
-  //var stockfish = new Worker('stockfish');
+  var moveCount = 0;
 
   var $history = $('.history');
   var history = [];
 
-  /*stockfish.postMessage('uci');
-  stockfish.postMessage('isready');
-  stockfish.postMessage('ucinewgame');*/
+  function makeRandomMove () {
+    var possibleMoves = game.moves();
 
-  function onDragStart (source, piece, position, orientation) {
-    if (game.in_checkmate() === true || game.in_draw() === true || isGameOver === true ||
-        (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-      return false;
+    // Game over
+    if (possibleMoves.length === 0) {
+      return;
     }
-  }
 
-  var onDrop = function (source, target) {
-    var move = game.move({
-      from: source,
-      to: target,
-      promotion: 'q'
-    });
+    // Play a random legal move for black and update the board position
+    var randomIdx = Math.floor(Math.random() * possibleMoves.length);
+    game.move(possibleMoves[randomIdx]);
 
-    removeGreySquares();
-    if (move === null) return 'snapback';
-
-    // Push the move to history
-    history.push(`${move.from}${move.to}`);
-    $history.text(history.join(' '));
-
-    /*// Make the AI opponent move
-    stockfish.postMessage('position fen ' + game.fen());
-    stockfish.postMessage('go depth 5');*/
-  };
-
-  var onSnapEnd = function () {
     board.position(game.fen());
-  };
-
-  var removeGreySquares = function () {
-    $('#board .square-55d63').css('background', '');
-  };
+  }
 
   var greySquare = function (square) {
     var squareEl = $('#board .square-' + square);
@@ -57,38 +33,76 @@ document.addEventListener("DOMContentLoaded", () => {
     squareEl.css('background', background);
   };
 
-  var onDragMove = function (oldPos, newPos) {
-    var square = newPos;
-    removeGreySquares();
+  var removeGreySquares = function () {
+    $('#board .square-55d63').css('background', '');
+  };
 
+  function onMouseoverSquare (square, piece) {
+    // get list of possible moves for this square
     var moves = game.moves({
       square: square,
       verbose: true
+    })
+
+    // exit if there are no moves available for this square
+    if (moves.length === 0) return
+
+    // highlight the square moused over
+    greySquare(square)
+
+    // highlight the possible squares for this piece
+    for (var i = 0; i < moves.length; i++) {
+      greySquare(moves[i].to)
+    }
+  }
+
+  function onMouseoutSquare (square, piece) {
+    removeGreySquares()
+  }
+
+  function onDragStart (source, piece, position, orientation) {
+    if (game.in_checkmate() === true || game.in_draw() === true || isGameOver === true ||
+        (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+      return false;
+    }
+  }
+
+  var onDrop = function (source, target) {
+    removeGreySquares();
+
+    var move = game.move({
+      from: source,
+      to: target,
+      promotion: 'q'
     });
 
-    for (var i = 0; i < moves.length; i++) {
-      greySquare(moves[i].to);
+    if (move === null) return 'snapback';
+
+    // Make random legal move for black
+    window.setTimeout(makeRandomMove, 250);
+
+    // Push the move to history
+    moveCount++;
+    if (game.turn() === 'w') {
+      history.push(`${moveCount}. ${move.from}${move.to} `);
+    } else {
+      history.push(`${move.from}${move.to} `);
     }
+    $history.text(history.join(' '));
   };
 
-  /*stockfish.onmessage = function (event) {
-    if (event.data.startsWith('bestmove')) {
-      var bestMove = event.data.split(' ')[1];
-      game.ugly_move(bestMove);
-      board.position(game.fen());
-      // Push the AI move to history
-      history.push(game.fen());
-      $history.text(history.join(' '));
-    }
-  };*/
+  var onSnapEnd = function () {
+    board.position(game.fen());
+  };
 
   board = ChessBoard('board', {
     draggable: true,
     position: 'start',
     onDragStart: onDragStart,
     onDrop: onDrop,
-    onMouseoutSquare: removeGreySquares,
+    onMouseoutSquare: onMouseoutSquare,
+    onMouseoverSquare: onMouseoverSquare,
     onSnapEnd: onSnapEnd,
-    onDragMove: onDragMove
   });
 })
