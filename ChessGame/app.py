@@ -7,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required,\
      logout_user, current_user
-from sqlalchemy import Column, String, Integer
 import chess
 import chess.svg
 import chess.engine
@@ -23,7 +22,10 @@ login_manager.login_view = "login"
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
+    firstName = db.Column(db.String(20), nullable=False)
+    lastName = db.Column(db.String(20), nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
 
 
@@ -62,6 +64,11 @@ def create_app_context():
 
 with create_app_context():
     db.create_all()
+
+@app.route('/img/logged_in')
+@login_required
+def logged_in():
+    return send_from_directory('img', 'logged_in.png')
     
 @app.route('/img/<filename>', methods=['GET'])
 def image(filename):
@@ -69,10 +76,16 @@ def image(filename):
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
+    firstName="guest"
+    lastName="guest"
     username="guest"
+    email="guest@guest.com"
     password="guest_pwd"
     if request.method == 'POST':
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
 
     if User.query.filter_by(username=username).first():
@@ -81,7 +94,8 @@ def register():
         flash('Username must be 3 or more characters', 'error')
     else:
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        newUser = User(username=username, password=hashed_password)
+        newUser = User(firstName=firstName, lastName=lastName, username=username,
+                       email=email, password=hashed_password)
         db.session.add(newUser)
         db.session.commit()
         flash('Welcome Holbie !', 'success')
@@ -92,9 +106,9 @@ def register():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)

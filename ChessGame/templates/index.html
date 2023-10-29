@@ -26,7 +26,10 @@
     <div class="user">
       <div class="searchbar"></div>
       <div class="usericon">
+        <!-- if not logged in -->
         <a href={{ url_for('register') }}><img src='../img/usericon.png' alt="usericon"></a>
+        <!-- if logged in -->
+        <!-- Display profile pic & redirect to user page on click  -->
       </div>
     </div>
   </header>
@@ -61,8 +64,8 @@
         <div class="play">
           <h2> Let's play ! </h2>
           <span class="buttons">
-            <p class="button"> 1v1 </p>
-            <p class="button"> Computer </p>
+            <p id="local" class="button"> 1v1 </p>
+            <p id="computer" class="button"> Computer </p>
           </span>
         </div>
       </div>
