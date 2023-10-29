@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   var board;
   var game = new Chess();
+  var mode = 'computer';
   var isGameOver = false;
   var moveCount = 0;
 
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Game over
     if (possibleMoves.length === 0) {
+      isGameOver = true;
       return;
     }
 
@@ -80,7 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (move === null) return 'snapback';
 
     // Make random legal move for black
-    window.setTimeout(makeRandomMove, 250);
+    if (mode === 'computer') {
+      window.setTimeout(makeRandomMove, 250);
+    }
 
     // Push the move to history
     moveCount++;
@@ -96,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     board.position(game.fen());
   };
 
-  board = ChessBoard('board', {
+  const config = {
     draggable: true,
     position: 'start',
     onDragStart: onDragStart,
@@ -104,5 +108,19 @@ document.addEventListener("DOMContentLoaded", () => {
     onMouseoutSquare: onMouseoutSquare,
     onMouseoverSquare: onMouseoverSquare,
     onSnapEnd: onSnapEnd,
-  });
+  }
+
+  board = Chessboard('board', config);
+
+  $('p#local.button').on('click', () => {
+    board.start();
+    game = new Chess();
+    mode = '1v1';
+  })
+
+  $('p#computer.button').on('click', () => {
+    board.start();
+    game = new Chess();
+    mode = 'computer';
+  })
 })
