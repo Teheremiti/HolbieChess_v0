@@ -8,6 +8,28 @@ document.addEventListener("DOMContentLoaded", () => {
   var $history = $('.history');
   var history = [];
 
+  function write_to_json(last_move) {
+    try {
+      const jsonData = JSON.stringify(last_move);
+      console.log(jsonData);
+      localStorage.setItem('last_move.json', jsonData);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  function makeHolbieMove () {
+    try {
+      const fileContent = localStorage.getItem('last_move.json');
+      const parsedData = JSON.parse(fileContent);
+      console.log(parsedData);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   function makeRandomMove () {
     var possibleMoves = game.moves();
 
@@ -19,9 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Play a random legal move for black and update the board position
     var randomIdx = Math.floor(Math.random() * possibleMoves.length);
-    game.move(possibleMoves[randomIdx]);
+    var move = possibleMoves[randomIdx]
+    game.move(move);
 
+    // Push move to history
+    history.push(move);
+    $history.text(history.join(' '))
     board.position(game.fen());
+
+    // Send move to JSON
+    write_to_json(move);
   }
 
   var greySquare = function (square) {
@@ -38,6 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
   var removeGreySquares = function () {
     $('#board .square-55d63').css('background', '');
   };
+
+  function pieceTheme (piece) {
+    return '/img/' + piece + '.svg'
+  }
 
   function onMouseoverSquare (square, piece) {
     // get list of possible moves for this square
@@ -81,17 +114,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (move === null) return 'snapback';
 
+    // Write move to JSON file in localStorage
+    write_to_json(move.san);
+
     // Make random legal move for black
     if (mode === 'computer') {
       window.setTimeout(makeRandomMove, 250);
     }
 
     // Push the move to history
-    moveCount++;
-    if (game.turn() === 'w') {
-      history.push(`${moveCount}. ${move.from}${move.to} `);
+    if (game.turn() === 'b') {
+      moveCount++;
+      history.push(`${moveCount}. ${move.san} `);
     } else {
-      history.push(`${move.from}${move.to} `);
+      history.push(`${move.san} `);
     }
     $history.text(history.join(' '));
   };
@@ -101,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const config = {
+    pieceTheme: pieceTheme,
     draggable: true,
     position: 'start',
     onDragStart: onDragStart,
@@ -112,15 +149,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   board = Chessboard('board', config);
 
-  $('p#local.button').on('click', () => {
+  $('button.local').on('click', () => {
     board.start();
     game = new Chess();
+    history = [];
+    $history.text("");
+    moveCount = 0;
     mode = '1v1';
   })
 
-  $('p#computer.button').on('click', () => {
+  $('button.computer').on('click', () => {
     board.start();
     game = new Chess();
+    history = [];
+    $history.text("");
+    moveCount = 0;
     mode = 'computer';
+  })
+
+  $('button.previous').on('click', () => {
+
   })
 })

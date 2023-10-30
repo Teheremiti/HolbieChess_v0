@@ -8,6 +8,9 @@
     href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
     integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU"
     crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" type="text/css" href="../static/styles/header.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
@@ -63,10 +66,15 @@
 
         <div class="play">
           <h2> Let's play ! </h2>
-          <span class="buttons">
-            <p id="local" class="button"> 1v1 </p>
-            <p id="computer" class="button"> Computer </p>
+          <span class="gamemode">
+            <button type="button" class="local"> 1v1 </button>
+            <button type="button" class="computer"> Computer </button>
+            <p class="history"></p> 
           </span>
+          <!--<div class="controls">
+            <button type="button" class="previous"> < </button>
+            <button type="button" class="next"> > </button>
+          </div>-->
         </div>
       </div>
 

@@ -63,7 +63,7 @@ body .play {
     align-items: center;
 }
 
-body .buttons {
+body .gamemode {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -72,16 +72,31 @@ body .buttons {
     justify-content: space-around;
 }
 
-body .buttons .button {
+body .gamemode button {
+    background-color: white;
     border: 1px solid black;
     border-radius: 10px;
     width: 100%;
     padding: 12px 0;
     text-align: center;
+    font-size: medium;
 }
 
-body .buttons .button:hover {
+body .gamemode button:hover {
     background-color: mediumaquamarine;
+    cursor: pointer;
+}
+
+body .controls button {
+    background-color: white;
+    border: 1.5px solid black;
+    border-radius: 10px;
+    font-size: x-large;
+    color: mediumaquamarine;
+}
+
+body .controls button:hover {
+    background-color: rgb(134, 226, 195);
     cursor: pointer;
 }
 
