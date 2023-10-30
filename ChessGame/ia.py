@@ -401,18 +401,15 @@ class IA:
 
         return jsonify({'ai_move': ai_move.uci()})  # Return the AI's move in UCI format
     
-    def push_move(self, move):
-        board.push_san(move)
-        return board
-
-    def return_ai_move(self):
+    def return_ai_move(self, board_fen):
+        board = chess.Board(board_fen)
         new_move = self.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
         return str(board.san(new_move))
 
 board = chess.Board()
 ia = IA()
 game_fens = []
-depth = 2
+depth = 1
 potential_moves = [
     "e2e4",
     "d2d4",
