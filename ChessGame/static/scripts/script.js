@@ -8,10 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
   var $history = $('.history');
   var history = [];
 
-  function write_to_json(last_move) {
+  function write_to_json(game_fen) {
     try {
-      const jsonData = JSON.stringify(last_move);
-      localStorage.setItem('last_move.json', jsonData);
+      const jsonData = JSON.stringify(game_fen);
+      localStorage.setItem('game_fen.json', jsonData);
     } catch (err) {
       console.error(err);
       throw err;
@@ -20,16 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function makeHolbieMove () {
     try {
-      const last_move = localStorage.getItem('last_move.json');
-      console.log(last_move)
-
+      const game_fen = localStorage.getItem('game_fen.json');
       console.log('Communicating with IA...')
       fetch('/IAMove', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json'
         },
-        body: last_move
+        body: game_fen
       })
       .then(response => response.json())
       .then(move => {
@@ -51,29 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(err);
       throw err;
     }
-  }
-
-  function makeRandomMove () {
-    var possibleMoves = game.moves();
-
-    // Game over
-    if (possibleMoves.length === 0) {
-      isGameOver = true;
-      return;
-    }
-
-    // Play a random legal move for black and update the board position
-    var randomIdx = Math.floor(Math.random() * possibleMoves.length);
-    var move = possibleMoves[randomIdx]
-    game.move(move);
-
-    // Push move to history and update board position
-    history.push(move);
-    $history.text(history.join(' '))
-    board.position(game.fen());
-
-    // Send move to JSON
-    write_to_json(move);
   }
 
   var greySquare = function (square) {
@@ -137,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (move === null) return 'snapback';
 
-    // Make random legal move for black
+    // Make IA move
     if (mode === 'computer') {
       window.setTimeout(makeHolbieMove, 250);
     }
@@ -154,8 +129,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var onSnapEnd = function () {
     board.position(game.fen());
-    // Write position to JSON file in localStorage
     write_to_json(game.fen());
+
+    if (mode === '1v1') {
+      board.flip();
+    }
   };
 
   const config = {
@@ -171,21 +149,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   board = Chessboard('board', config);
 
-  $('button.local').on('click', () => {
+  function restartGame () {
     board.start();
     game = new Chess();
     history = [];
     $history.text("");
     moveCount = 0;
+  }
+
+  $('button.local').on('click', () => {
+    restartGame();
     mode = '1v1';
   })
 
   $('button.computer').on('click', () => {
-    board.start();
-    game = new Chess();
-    history = [];
-    $history.text("");
-    moveCount = 0;
+    restartGame();
     mode = 'computer';
   })
 

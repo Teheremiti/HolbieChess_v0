@@ -389,13 +389,13 @@ class IA:
                 print("caps sensitive input, usage: $ e4d5")
     
     def return_ai_move(self, board_fen):
-        bite = chess.Board(board_fen)
-        new_move = self.choose_move(bite, depth, -float('inf'), float('inf'), bite.turn)
-        return str(bite.san(new_move))
+        board = chess.Board(board_fen)
+        new_move = self.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+        return str(board.san(new_move))
 
 ia = IA()
 game_fens = []
-depth = 1
+depth = 2
 potential_moves = [
     "e2e4",
     "d2d4",

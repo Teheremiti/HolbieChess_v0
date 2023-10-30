@@ -28,7 +28,6 @@ class User(db.Model, UserMixin):
 
 
 # Basic routes
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -111,11 +110,12 @@ def logout():
 ia = IA()
 @app.route('/IAMove', methods=['POST'])
 def receive_move():
-    print('Requesting IA move')
-    board_fen = request.json  # Get the JSON data sent from JavaScript
-    print('Board state: ', board_fen)
-    # Process the move using your AI
-    ai_response = ia.return_ai_move(board_fen) # Implement process_move in your IA class
+    print('Requesting IA move...')
+    # Get the JSON data sent from JavaScript
+    game_fen = request.json
+    
+    # Get a move from the IA
+    ai_response = ia.return_ai_move(game_fen)
     print("IA response is: ", ai_response)
 
     # Return a JSON response to JavaScript
