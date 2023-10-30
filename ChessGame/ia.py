@@ -270,7 +270,7 @@ class IA:
                     value += self.get_piece_value(piece)
         return value
     
-    def choose_move(self, board: chess.Board, depth: int, alpha: float, beta: float, maximizing_player: bool) -> chess.Move:
+    def choose_move(self, board, depth: int, alpha: float, beta: float, maximizing_player: bool) -> chess.Move:
         # Choose move function
         # Returns the best move
         best_move = None
@@ -319,7 +319,7 @@ class IA:
         if depth == 0 or board.is_game_over():
             return self.evaluate_board(board)
 
-        if maximizing_player:
+        if not maximizing_player:
             best_score = -float('inf')
             for move in board.legal_moves:
                 board.push(move)
@@ -388,25 +388,11 @@ class IA:
             except ValueError:
                 print("caps sensitive input, usage: $ e4d5")
     
-    #@app.route('/get_ai_move', methods=['POST'])
-    def get_ai_move(self):
-        data = request.get_json()
-        user_move = data.get('user_move')
-        board = chess.Board()
-        board.push_san(user_move)
-
-        ai_move = self.choose_move(board, board.turn)
-        
-        self.save_to_json(ai_move)
-
-        return jsonify({'ai_move': ai_move.uci()})  # Return the AI's move in UCI format
-    
     def return_ai_move(self, board_fen):
-        board = chess.Board(board_fen)
-        new_move = self.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
-        return str(board.san(new_move))
+        bite = chess.Board(board_fen)
+        new_move = self.choose_move(bite, depth, -float('inf'), float('inf'), bite.turn)
+        return str(bite.san(new_move))
 
-board = chess.Board()
 ia = IA()
 game_fens = []
 depth = 1
