@@ -109,17 +109,18 @@ def logout():
 
 # AI move generation
 ia = IA()
-@app.route('/AiMove', methods=['POST'])
+@app.route('/IAMove', methods=['POST'])
 def receive_move():
-    print('requesting IA move')
-    last_move = request.json  # Get the JSON data sent from JavaScript
-    print(last_move)
-    ia.push_move(last_move)
+    print('Requesting IA move')
+    user_move = request.json  # Get the JSON data sent from JavaScript
+    print('User move: ', user_move)
     # Process the move using your AI
-    ai_response = ia.return_ai_move(last_move) # Implement process_move in your IA class
+    ai_response = ia.return_ai_move() # Implement process_move in your IA class
+    print("IA response is: ", ai_response)
 
     # Return a JSON response to JavaScript
     return jsonify(ai_response)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

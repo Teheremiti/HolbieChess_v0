@@ -3,7 +3,7 @@ import chess.engine
 import chess.pgn
 from flask import Flask, request, jsonify
 import json
-import random 
+import random
 
 #Add king safety X
 #Add pawn structure
@@ -313,8 +313,6 @@ class IA:
 
             if beta <= alpha:
                 break
-        print("best move is : ", best_move)
-        print("best value is : ", best_value)
         return best_move
     
     def minimax(self, board: chess.Board, depth: int, alpha: float, beta: float, maximizing_player: bool) -> float:
@@ -409,7 +407,7 @@ class IA:
 
     def return_ai_move(self):
         new_move = self.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
-        return str(new_move)
+        return str(board.san(new_move))
 
 board = chess.Board()
 ia = IA()
