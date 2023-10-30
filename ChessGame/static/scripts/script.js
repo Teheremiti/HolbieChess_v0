@@ -137,9 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (move === null) return 'snapback';
 
-    // Write move to JSON file in localStorage
-    write_to_json(board.fen());
-
     // Make random legal move for black
     if (mode === 'computer') {
       window.setTimeout(makeHolbieMove, 250);
@@ -157,6 +154,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var onSnapEnd = function () {
     board.position(game.fen());
+    // Write position to JSON file in localStorage
+    write_to_json(game.fen());
   };
 
   const config = {

@@ -112,10 +112,10 @@ ia = IA()
 @app.route('/IAMove', methods=['POST'])
 def receive_move():
     print('Requesting IA move')
-    user_move = request.json  # Get the JSON data sent from JavaScript
-    print('User move: ', user_move)
+    board_fen = request.json  # Get the JSON data sent from JavaScript
+    print('Board state: ', board_fen)
     # Process the move using your AI
-    ai_response = ia.return_ai_move() # Implement process_move in your IA class
+    ai_response = ia.return_ai_move(board_fen) # Implement process_move in your IA class
     print("IA response is: ", ai_response)
 
     # Return a JSON response to JavaScript
