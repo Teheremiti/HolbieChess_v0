@@ -3,7 +3,7 @@ import chess.engine
 import chess.pgn
 from flask import Flask, request, jsonify
 import json
-import random
+import random 
 
 #Add king safety X
 #Add pawn structure
@@ -240,15 +240,15 @@ class IA:
             # Scan through all squares on the board
             piece = board.piece_at(i)
             if piece != None:
-                king_safety_value = ia.check_king_safety(board)
-                pawn_cover_value = ia.check_pawn_cover(board, board.king(board.turn))
-                castling_value = ia.evaluate_castling(board)
-                pawn_structure_value = ia.evaluate_pawn_structure(board)
+                king_safety_value = self.check_king_safety(board)
+                pawn_cover_value = self.check_pawn_cover(board, board.king(board.turn))
+                castling_value = self.evaluate_castling(board)
+                pawn_structure_value = self.evaluate_pawn_structure(board)
                 total_value = king_safety_value + pawn_cover_value + castling_value + pawn_structure_value
                 # Add value for white pieces and subtract for black pieces
                 if piece.color == chess.WHITE:
                     value += total_value
-                    if ia.check_piece_development(board, i, chess.WHITE):
+                    if self.check_piece_development(board, i, chess.WHITE):
                         value += 9
                     if i in center_squares:
                         value += 20
@@ -259,7 +259,7 @@ class IA:
                     value += self.get_piece_value(piece)
                 elif piece.color == chess.BLACK:
                     value -= total_value
-                    if ia.check_piece_development(board, i, chess.BLACK):
+                    if self.check_piece_development(board, i, chess.BLACK):
                         value -= 9
                     if i in center_squares:
                         value -= 20
@@ -361,24 +361,6 @@ class IA:
                 if beta <= alpha:
                     break
             return best_score
-
-app = Flask(__name)
-ia = IA()  # Initialize your AI
-
-@app.route('/your-python-endpoint', methods=['POST'])
-def receive_move():
-    data = request.json  # Get the JSON data sent from JavaScript
-    last_move = data  # Assuming data is the last move in UCI format
-
-    # Process the move using your AI
-    ai_response = ia.choose_move(last_move)  # Implement process_move in your IA class
-
-    # Return a JSON response to JavaScript
-    return jsonify({'ai_response': ai_response})
-
-if __name__ == '__main__':
-    app.run()
-
     
     def save_to_json(self, move: chess.Move) -> None:
         json_file_path = "last_move.json"
@@ -395,7 +377,7 @@ if __name__ == '__main__':
             try:
                 # Get human move (from command line for now) and checks for its validity
                 # Also checks for wrong input:
-                usr_input = ia.read_from_json()
+                usr_input = self.read_from_json()
                 # Gets san value for input type
                 san_move = usr_input
                 uci_move = board.parse_san(san_move)
@@ -409,17 +391,25 @@ if __name__ == '__main__':
                 print("caps sensitive input, usage: $ e4d5")
     
     #@app.route('/get_ai_move', methods=['POST'])
-    def get_ai_move():
+    def get_ai_move(self):
         data = request.get_json()
         user_move = data.get('user_move')
         board = chess.Board()
         board.push_san(user_move)
 
-        ai_move = ia.choose_move(board, board.turn)
+        ai_move = self.choose_move(board, board.turn)
         
-        ia.save_to_json(ai_move)
+        self.save_to_json(ai_move)
 
         return jsonify({'ai_move': ai_move.uci()})  # Return the AI's move in UCI format
+    
+    def push_move(self, move):
+        board.push_san(move)
+        return board
+
+    def return_ai_move(self):
+        new_move = self.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+        return str(new_move)
 
 board = chess.Board()
 ia = IA()
@@ -432,37 +422,37 @@ potential_moves = [
     "g1f3",
     "b1c3"
 ]
-try:
-    with open("game_fens.json", "w") as f:
-        for _ in range(10): # Loop the game until it's over
-            #user_move = ia.read_from_json()  # Get the move from JSON
-            #user_move = input("Enter your move: ")
-            if board.is_repetition(3) or board.is_stalemate() or board.is_insufficient_material() or board.is_fifty_moves():
-                print("Draw!")
-                break
-            if board.fullmove_number <= 1:
-                board.push_san(random.choice(potential_moves))
-            else:
-                user_move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
-                board.push_san(str(user_move))  # Push the user's move
-            print("white moved en dessous")   
-            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
-            print(board)
-            if board.is_game_over():
-                break
-            move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
-            ia.save_to_json(move)  # Save the move to JSON
-            
-            print("AI's move:", move)
-            board.push(move)
-            print("black moved en dessous")
-            print(board)
-            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
-            
-        json.dump(game_fens,f)
-    
-    
-except KeyboardInterrupt:
-    pass
-finally:
-    print("bien ouej")
+#try:
+#    with open("game_fens.json", "w") as f:
+#        for _ in range(10): # Loop the game until it's over
+#            #user_move = self.read_from_json()  # Get the move from JSON
+#            #user_move = input("Enter your move: ")
+#            if board.is_repetition(3) or board.is_stalemate() or board.is_insufficient_material() or board.is_fifty_moves():
+#                print("Draw!")
+#                break
+#            if board.fullmove_number <= 1:
+#                board.push_san(random.choice(potential_moves))
+#            else:
+#                user_move = self.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+#                board.push_san(str(user_move))  # Push the user's move
+#            print("white moved en dessous")   
+#            game_fens.append(str((board.peek()))+ ": " + str(self.evaluate_board(board)))
+#            print(board)
+#            if board.is_game_over():
+#                break
+#            move = self.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+#            self.save_to_json(move)  # Save the move to JSON
+#            
+#            print("AI's move:", move)
+#            board.push(move)
+#            print("black moved en dessous")
+#            print(board)
+#            game_fens.append(str((board.peek()))+ ": " + str(self.evaluate_board(board)))
+#            
+#        json.dump(game_fens,f)
+#    
+#    
+#except KeyboardInterrupt:
+#    pass
+#finally:
+#    print("bien ouej")

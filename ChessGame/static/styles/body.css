@@ -87,7 +87,7 @@ body .gamemode button:hover {
     cursor: pointer;
 }
 
-body .controls button {
+/*body .controls button {
     background-color: white;
     border: 1.5px solid black;
     border-radius: 10px;
@@ -98,7 +98,7 @@ body .controls button {
 body .controls button:hover {
     background-color: rgb(134, 226, 195);
     cursor: pointer;
-}
+}*/
 
 body .articles h2 {
     padding-top: 5rem;

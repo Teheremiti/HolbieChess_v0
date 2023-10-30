@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required,\
      logout_user, current_user
+from ia import IA
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -104,7 +105,21 @@ def logout():
     logout_user()
     flash('Succesfully logged out', 'success')
     return redirect(url_for('index'))
-    
+
+
+# AI move generation
+ia = IA()
+@app.route('/AiMove', methods=['POST'])
+def receive_move():
+    print('requesting IA move')
+    last_move = request.json  # Get the JSON data sent from JavaScript
+    print(last_move)
+    ia.push_move(last_move)
+    # Process the move using your AI
+    ai_response = ia.return_ai_move(last_move) # Implement process_move in your IA class
+
+    # Return a JSON response to JavaScript
+    return jsonify(ai_response)
 
 if __name__ == '__main__':
     app.run(debug=True)

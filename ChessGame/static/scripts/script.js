@@ -167,7 +167,11 @@ document.addEventListener("DOMContentLoaded", () => {
     mode = 'computer';
   })
 
-  $('button.previous').on('click', () => {
+  /*$('button.previous').on('click', () => {
 
   })
+
+  $('button.next').on('click', () => {
+
+  })*/
 })
