@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function write_to_json(last_move) {
     try {
       const jsonData = JSON.stringify(last_move);
-      console.log(jsonData);
       localStorage.setItem('last_move.json', jsonData);
     } catch (err) {
       console.error(err);
@@ -21,9 +20,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function makeHolbieMove () {
     try {
-      const fileContent = localStorage.getItem('last_move.json');
-      const parsedData = JSON.parse(fileContent);
-      console.log(parsedData);
+      const last_move = localStorage.getItem('last_move.json');
+      console.log(last_move)
+
+      console.log('Communicating with IA...')
+      fetch('/IAMove', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: last_move
+      })
+      .then(response => response.json())
+      .then(move => {
+        console.log('Response from IA: ', move);
+        game.move(move);
+        board.position(game.fen());
+
+        // Push move to history and update board position
+        history.push(move);
+        $history.text(history.join(' '));
+
+        // Send move to JSON
+        write_to_json(move);
+      })
+      .catch(err => {
+        console.error('Error communicating with chess IA:', err);
+      })
     } catch (err) {
       console.error(err);
       throw err;
@@ -44,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     var move = possibleMoves[randomIdx]
     game.move(move);
 
-    // Push move to history
+    // Push move to history and update board position
     history.push(move);
     $history.text(history.join(' '))
     board.position(game.fen());
@@ -115,11 +138,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (move === null) return 'snapback';
 
     // Write move to JSON file in localStorage
-    write_to_json(move.san);
+    write_to_json(board.fen());
 
     // Make random legal move for black
     if (mode === 'computer') {
-      window.setTimeout(makeRandomMove, 250);
+      window.setTimeout(makeHolbieMove, 250);
     }
 
     // Push the move to history
