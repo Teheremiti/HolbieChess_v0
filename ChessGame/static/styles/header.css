@@ -1,5 +1,11 @@
 * {
     margin: 0;
+    padding: 0;
+}
+
+* a {
+    color: inherit;
+    text-decoration: none;
 }
 
 header {
@@ -14,9 +20,10 @@ header {
     width: 100%;
 }
 
-header .homepage {
+header .homepage a {
     display: flex;
     align-items: center;
+    justify-content: center;
     padding-left: 1rem;
 }
 

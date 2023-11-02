@@ -1,8 +1,8 @@
-<!-- Template for the chess app -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Holbie Chess</title>
   <link rel="stylesheet"
     href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
@@ -13,6 +13,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" type="text/css" href="../static/styles/header.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
+  <link rel="stylesheet" type="text/css" href="../static/styles/index.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
   <script type="module" src="../static/scripts/script.js"></script>
 </head>
@@ -21,10 +22,12 @@
   <!-- Header -->
   <header>
     <div class="homepage">
-      <div class="logo">
-        <img src="../img/holbielogo.png" alt="holbielogo">
-      </div>
-      <h1> Holbie Chess </h1>
+      <a href="#">
+        <div class="logo">
+          <img src="../img/holbielogo.png" alt="holbielogo">
+        </div>
+        <h1> Holbie Chess </h1>
+      </a>
     </div>
     <div class="user">
       <div class="searchbar"></div>
@@ -40,15 +43,13 @@
   <main>
 
     <!-- Side banner -->
-    <banner>
-      <ul>
-        <li>Play</li>
-        <li>Achievements</li>
-        <li>Friends</li>
-        <li>News</li>
-        <li>About us</li>
-      </ul>
-    </banner>
+    <ul class="side_banner">
+      <a href="./play.html"><li>Play</li></a>
+      <a href="./achievements.html"><li>Achievements</li></a>
+      <a href="./friends.html"><li>Friends</li></a>
+      <a href="#"><li>News</li></a>
+      <a href="#"><li>About us</li></a>
+    </ul>
 
     <!-- Main page -->
     <div class="common">
@@ -89,10 +90,10 @@
         </ul>
       </div>
     </div>
-
   </main>
+
+  <footer>
+    <p> Made by Teheremiti & Tristan </p>
+  </footer>
 </body>
-<footer>
-  <p> Made with ♡ by Teheremiti & Tristan </p>
-</footer>
 </html>
