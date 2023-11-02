@@ -1,5 +1,4 @@
 body .common .game {
-    background-color: white;
     margin-top: 2rem;
     display: flex;
     width: 100%;
@@ -59,7 +58,7 @@ body .controls button:hover {
     cursor: pointer;
 }*/
 
-body .articles h2 {
+body h2 {
     padding-top: 5rem;
     padding-bottom: 2rem;
     text-align: center;

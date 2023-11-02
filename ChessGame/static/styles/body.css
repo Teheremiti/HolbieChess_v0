@@ -10,6 +10,8 @@ body main {
 }
 
 body main .side_banner {
+    position: sticky;
+    top: 4rem;
     background-color: slategray;
     width: 12%;
     list-style-type: none;

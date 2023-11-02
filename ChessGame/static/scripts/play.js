@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   var board;
   var game = new Chess();
-  var mode = 'computer';
+  var mode = new URLSearchParams(window.location.search).get('mode');
   var isGameOver = false;
   var moveCount = 0;
 
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Push move to history and update board position
         history.push(move);
-        $history.text(history.join(' '));
+        $history.html(`<p>Moves log:<br>${history.join(' ')}</p>`);
 
         // Send move to JSON
         write_to_json(move);
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       history.push(`${move.san} `);
     }
-    $history.text(history.join(' '));
+    $history.html(`<p>Moves log:<br>${history.join(' ')}</p>`);
   };
 
   var onSnapEnd = function () {
@@ -136,24 +136,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  board = Chessboard('board', {
+  const config = {
     pieceTheme: pieceTheme,
+    draggable: true,
     position: 'start',
-    draggable: false
-  });
+    onDragStart: onDragStart,
+    onDrop: onDrop,
+    onMouseoutSquare: onMouseoutSquare,
+    onMouseoverSquare: onMouseoverSquare,
+    onSnapEnd: onSnapEnd,
+  }
+
+  board = Chessboard('board', config);
 
   function restartGame () {
     board.destroy();
-    const config = {
-      pieceTheme: pieceTheme,
-      draggable: true,
-      position: 'start',
-      onDragStart: onDragStart,
-      onDrop: onDrop,
-      onMouseoutSquare: onMouseoutSquare,
-      onMouseoverSquare: onMouseoverSquare,
-      onSnapEnd: onSnapEnd,
-    }
     board = Chessboard('board', config);
     game = new Chess();
     history = [];

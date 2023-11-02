@@ -15,7 +15,7 @@
   <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/index.css">
   <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
-  <script type="module" src="../static/scripts/script.js"></script>
+  <script type="module" src="../static/scripts/index.js"></script>
 </head>
 
 <body>
@@ -47,16 +47,15 @@
       <a href="./play.html"><li>Play</li></a>
       <a href="./achievements.html"><li>Achievements</li></a>
       <a href="./friends.html"><li>Friends</li></a>
-      <a href="#"><li>News</li></a>
-      <a href="#"><li>About us</li></a>
+      <a href="#news"><li>News</li></a>
+      <a href="#about"><li>About us</li></a>
     </ul>
 
     <!-- Main page -->
     <div class="common">
 
-      <div class="game">
+      <section class="game">
         <div id="board"></div>
-        <!--<div class="history"></div> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"
           integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
@@ -69,17 +68,16 @@
           <h2> Let's play ! </h2>
           <span class="gamemode">
             <button type="button" class="local"> 1v1 </button>
-            <button type="button" class="computer"> Computer </button>
-            <p class="history"></p> 
+            <button type="button" class="computer"> Computer </button> 
           </span>
           <!--<div class="controls">
             <button type="button" class="previous"> < </button>
             <button type="button" class="next"> > </button>
           </div>-->
         </div>
-      </div>
+      </section>
 
-      <div class="articles">
+      <section id="news" class="articles">
         <h2> Follow the latest news </h2>
         <ul>
           <li><article>Article1</article></li>
@@ -87,8 +85,14 @@
           <li><article>Article3</article></li>
           <li><article>Article4</article></li>
           <li><article>Article5</article></li>
+          <li><article>Article6</article></li>
+          <li><article>Article7</article></li>
         </ul>
-      </div>
+      </section>
+
+      <section id="about" class="about">
+        <h2> About us </h2>
+      </section>
     </div>
   </main>
 

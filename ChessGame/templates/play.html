@@ -5,10 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play Holbie</title></html>
+    <link rel="stylesheet"
+        href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
+        integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+        integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" type="text/css" href="../static/styles/header.css">
     <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
-    <link rel="stylesheet" type="text/css" href="../static/styles/achievements.css">
     <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
+    <link rel="stylesheet" type="text/css" href="../static/styles/play.css">
+    <script type="module" src="../static/scripts/play.js"></script>
 </head>
 
 <body>
@@ -38,11 +46,30 @@
             <li>Play</li>
             <a href="./achievements.html"><li>Achievements</li></a>
             <a href="./friends.html"><li>Friends</li></a>
-            <a href="./index.html"><li>News</li></a>
-            <a href="./index.html"><li>About us</li></a>
+            <a href="./index.html#news"><li>News</li></a>
+            <a href="./index.html#about"><li>About us</li></a>
         </ul>
 
-        <div class="common"></div>
+        <div class="common">
+            <section class="game">
+                <div id="board"></div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
+                <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+                    integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
+                    crossorigin="anonymous"></script>
+                <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
+                    integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
+                    crossorigin="anonymous"></script>
+            </section>
+
+            <section class="aside">
+                <div class="gamemode">
+                    <button type="button" class="local"> 1v1 </button>
+                    <button type="button" class="computer"> Computer </button> 
+                </div>
+                <div class="history"></div>
+            </section>
+        </div>
     </main>
 
     <footer>
