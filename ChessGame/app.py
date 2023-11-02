@@ -45,13 +45,6 @@ def image(filename):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-    # Create the app context for the database
-def create_app_context():
-    return app.app_context()
-
-with create_app_context():
-    db.create_all()
-
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     firstName="guest"
@@ -125,6 +118,12 @@ def receive_move():
     # Return a JSON response to JavaScript
     return jsonify(ai_response)
 
+# Create the app context for the database
+def create_app_context():
+    return app.app_context()
+
+with create_app_context():
+    db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True)
