@@ -136,21 +136,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const config = {
+  board = Chessboard('board', {
     pieceTheme: pieceTheme,
-    draggable: true,
     position: 'start',
-    onDragStart: onDragStart,
-    onDrop: onDrop,
-    onMouseoutSquare: onMouseoutSquare,
-    onMouseoverSquare: onMouseoverSquare,
-    onSnapEnd: onSnapEnd,
-  }
-
-  board = Chessboard('board', config);
+    draggable: false
+  });
 
   function restartGame () {
-    board.start();
+    board.destroy();
+    const config = {
+      pieceTheme: pieceTheme,
+      draggable: true,
+      position: 'start',
+      onDragStart: onDragStart,
+      onDrop: onDrop,
+      onMouseoutSquare: onMouseoutSquare,
+      onMouseoverSquare: onMouseoverSquare,
+      onSnapEnd: onSnapEnd,
+    }
+    board = Chessboard('board', config);
     game = new Chess();
     history = [];
     $history.text("");

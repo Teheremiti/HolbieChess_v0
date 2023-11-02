@@ -395,7 +395,7 @@ class IA:
 
 ia = IA()
 game_fens = []
-depth = 2
+depth = 1
 potential_moves = [
     "e2e4",
     "d2d4",

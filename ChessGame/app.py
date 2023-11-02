@@ -32,6 +32,10 @@ class User(db.Model, UserMixin):
 def index():
     return render_template('index.html')
 
+@app.route('/<page>.html')
+def loadpage(page):
+    return render_template(f'{page}.html')
+
 @app.route('/img/<filename>', methods=['GET'])
 def image(filename):
     return send_from_directory('img', filename)
@@ -47,11 +51,6 @@ def create_app_context():
 
 with create_app_context():
     db.create_all()
-
-@app.route('/img/logged_in')
-@login_required
-def logged_in():
-    return send_from_directory('img', 'logged_in.png')
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -97,6 +96,11 @@ def login():
             flash('Login failed, please check your credentials', 'error')
 
     return render_template('login.html')
+
+@app.route('/img/logged_in')
+@login_required
+def logged_in():
+    return send_from_directory('img', 'logged_in.png')
 
 @app.route('/logout')
 @login_required
