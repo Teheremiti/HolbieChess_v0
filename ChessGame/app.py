@@ -107,13 +107,11 @@ def logout():
 ia = IA()
 @app.route('/IAMove', methods=['POST'])
 def receive_move():
-    print('Requesting IA move...')
     # Get the JSON data sent from JavaScript
     game_fen = request.json
     
     # Get a move from the IA
     ai_response = ia.return_ai_move(game_fen)
-    print("IA response is: ", ai_response)
 
     # Return a JSON response to JavaScript
     return jsonify(ai_response)
