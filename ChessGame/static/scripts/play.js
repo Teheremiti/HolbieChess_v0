@@ -125,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   var onSnapEnd = function () {
     board.position(game.fen());
-
     if (mode === '1v1' && !isGameOver()) {
       board.flip();
     }
