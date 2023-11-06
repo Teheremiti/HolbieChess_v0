@@ -148,14 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.setTimeout(makeHolbieMove, 250);
   }
 
-  $('button.local').on('click', () => {
-    window.location.replace('/play.html?mode=1v1');
-  })
-
-  $('button.computer').on('click', () => {
-    window.location.replace('./play.html?mode=computer');
-  })
-
   var last_moves = [];
   $('button.previous').on('click', () => {
     last_moves.push(game.undo().san);
