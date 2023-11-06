@@ -2,11 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
   var board;
   var game = new Chess();
   var mode = new URLSearchParams(window.location.search).get('mode');
-  var isGameOver = false;
-  var moveCount = 0;
-
   var $history = $('.history');
-  var history = [];
+
+  function isGameOver() {
+    return game.in_checkmate() || game.in_draw() || game.in_stalemate() ||
+           game.in_threefold_repetition() || game.insufficient_material();
+  }
 
   function write_to_json(game_fen) {
     try {
@@ -19,9 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function makeHolbieMove () {
+    write_to_json(game.fen());
     try {
       const game_fen = localStorage.getItem('game_fen.json');
-      console.log('Communicating with IA...')
       fetch('/IAMove', {
         method: 'POST',
         headers: {
@@ -32,12 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(response => response.json())
       .then(move => {
         console.log('Response from IA: ', move);
+        console.log('-----------------')
         game.move(move);
         board.position(game.fen());
 
-        // Push move to history and update board position
-        history.push(move);
-        $history.html(`<p>Moves log:<br>${history.join(' ')}</p>`);
+        // Push move to history
+        $history.html(`<p><strong>Moves log:</strong><br>${game.pgn()}</p>`);
 
         // Send move to JSON
         write_to_json(move);
@@ -94,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function onDragStart (source, piece, position, orientation) {
-    if (game.in_checkmate() === true || game.in_draw() === true || isGameOver === true ||
+    if (isGameOver() ||
         (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
         (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
       return false;
@@ -111,32 +112,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (move === null) return 'snapback';
+    console.log(`User move: ${move.san}`);
 
     // Make IA move
-    if (mode === 'computer') {
+    if (mode === 'computer' && !isGameOver()) {
       window.setTimeout(makeHolbieMove, 250);
     }
 
     // Push the move to history
-    if (game.turn() === 'b') {
-      moveCount++;
-      history.push(`${moveCount}. ${move.san} `);
-    } else {
-      history.push(`${move.san} `);
-    }
-    $history.html(`<p>Moves log:<br>${history.join(' ')}</p>`);
+    $history.html(`<p><strong>Moves log:</strong><br>${game.pgn()}</p>`);
   };
 
   var onSnapEnd = function () {
     board.position(game.fen());
-    write_to_json(game.fen());
-
-    if (mode === '1v1') {
+    if (mode === '1v1' && !isGameOver()) {
       board.flip();
     }
   };
 
   const config = {
+    // Set the orientation randomly if playing against computer
+    orientation: mode === '1v1' ? 'white' : Math.random() > 0.5 ? 'white' : 'black',
     pieceTheme: pieceTheme,
     draggable: true,
     position: 'start',
@@ -148,31 +144,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   board = Chessboard('board', config);
-
-  function restartGame () {
-    board.destroy();
-    board = Chessboard('board', config);
-    game = new Chess();
-    history = [];
-    $history.text("");
-    moveCount = 0;
+  if (board.orientation() === 'black') {
+    window.setTimeout(makeHolbieMove, 250);
   }
 
   $('button.local').on('click', () => {
-    restartGame();
-    mode = '1v1';
+    window.location.replace('/play.html?mode=1v1');
   })
 
   $('button.computer').on('click', () => {
-    restartGame();
-    mode = 'computer';
+    window.location.replace('./play.html?mode=computer');
   })
 
-  /*$('button.previous').on('click', () => {
-
+  var last_moves = [];
+  $('button.previous').on('click', () => {
+    last_moves.push(game.undo().san);
+    board.position(game.fen());
   })
 
   $('button.next').on('click', () => {
+    game.move(last_moves.pop());
+    board.position(game.fen());
+    // If we go back before the IA makes a move, when we come back the move is
+    // not made and the position is blocked.
+  })
 
+  $('button.restart').on('click', () => {
+    game.reset();
+    board.start();
+    $history.html('');
+    if (mode === '1v1') {
+      board.orientation('white');
+    }
+  })
+
+  /*window.addEventListener('resize', () => {
+    board.resize();
   })*/
 })

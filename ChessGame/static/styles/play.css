@@ -27,7 +27,7 @@
     width: 100%;
 }
 
-body .gamemode button {
+.gamemode button {
     background-color: white;
     border: 1px solid black;
     border-radius: 10px;
@@ -37,7 +37,25 @@ body .gamemode button {
     font-size: medium;
 }
 
-body .gamemode button:hover {
+.gamemode button:hover {
     background-color: mediumaquamarine;
+    cursor: pointer;
+}
+
+.controls {
+    margin-top: auto;
+    text-align: center;
+}
+
+.controls button {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-size: large;
+    padding: 0.5rem 0.5rem;
+}
+
+.controls button:hover {
+    background-color: rgb(134, 226, 195);
     cursor: pointer;
 }
