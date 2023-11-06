@@ -94,22 +94,22 @@ body .articles button {
 }
 
 .art1 article h2{
-    background-image: url("/HolbieChess_v0/ChessGame/img/elo_ratings_pics.jpeg");
+    background-image: url("../../img/elo_ratings_pics.jpeg");
 
 }
 
 .art2 article h2 {
-    background-image: url("/HolbieChess_v0/ChessGame/img/daily_puzzle_app.jpeg");
+    background-image: url("../../img/daily_puzzle_app.jpeg");
 }
 
 .art3 article h2 {
-    background-image: url("/HolbieChess_v0/ChessGame/img/image_dailychess.png");
+    background-image: url("../../img/image_dailychess.png");
 }
 
 .art4 article h2 {
-    background-image: url("/HolbieChess_v0/ChessGame/img/human_robot.png");
+    background-image: url("../../img/human_robot.png");
 }
 
 .art5 article h2 {
-    background-image: url("/HolbieChess_v0/ChessGame/img/ia_lady.jpeg");
+    background-image: url("../../img/ia_lady.jpeg");
 }
