@@ -2,18 +2,21 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: slategray;
+    background-color: rgb(6, 19, 60);
 }
 
 body main {
     display: flex;
+    color: white;
 }
 
 body main .side_banner {
     position: sticky;
     top: 4rem;
-    background-color: slategray;
-    width: 12%;
+    background-color: rgb(6, 19, 60);
+    color: white;
+    min-width: 120px;
+    width: 150px;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -27,15 +30,30 @@ body .side_banner li {
     width: 100%;
     padding: 1rem 0;
     text-align: center;
+    position: relative;
+    z-index : 1;
+    overflow: hidden;
+    transition: 0.2s;
 }
 
 body .side_banner li:hover {
-    background-color: mediumaquamarine;
+    background-color: aquamarine;
+    color: rgb(6, 19, 60);
     cursor: pointer;
+}
+
+body .side_banner li:before {
+    content: "";
+    position: absolute;
+    left    : 10%;
+    bottom  : 0;
+    height  : 95%;
+    width   : 80%;
+    border-bottom: 1px solid aquamarine;
 }
 
 body .common {
     width: 100%;
     min-height: 86.8vh;
-    background-color: white;
+    background-color: rgb(15, 30, 78);
 }

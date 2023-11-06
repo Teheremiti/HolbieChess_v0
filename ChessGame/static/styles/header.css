@@ -12,7 +12,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 1;
-    background: mediumaquamarine;
+    background: rgb(90, 230, 185);
     display: flex;
     justify-content: space-between;
     color: white;
@@ -60,7 +60,7 @@ header .user .usericon {
 }
 
 header .user .usericon:hover {
-    background-color: rgb(134, 226, 195);
+    background-color: rgb(30, 255, 180);
 }
 
 header .usericon img {

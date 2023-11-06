@@ -1,8 +1,24 @@
 footer {
     width: 100%;
     margin-top: auto;
+    display: flex;
+    justify-content: center;
     padding: 1rem 0;
-    text-align: center;
-    border-top: 1px solid black;
-    background-color: white;
+    background-color: rgb(156, 192, 223);
+    border-top: 1.5px solid aquamarine;
+    color: black;
+}
+
+footer p:first-child {
+    padding-right: 1rem;
+    margin-right: 1rem;
+    border-right: 2px solid black;
+}
+
+footer a {
+    text-decoration: underline;
+}
+
+footer a:hover {
+    color: rgb(15, 30, 78);
 }

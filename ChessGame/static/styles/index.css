@@ -4,17 +4,20 @@ body .common .game {
     width: 100%;
 }
 
+.game a {
+    margin-left: 12%;
+}
+
 body #board {
-    margin-left: 8rem;
     width: 550px;
 }
 
 body .play {
     height: 550px;
-    margin-left: 12rem;
+    min-width: 130px;
+    margin-left: 22%;
     margin-right: 2rem;
     font-size: large;
-
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -31,44 +34,81 @@ body .gamemode {
 }
 
 body .gamemode button {
-    background-color: white;
-    border: 1px solid black;
+    background-color: rgb(15, 30, 78);
+    border: 1px solid aquamarine;
     border-radius: 10px;
     width: 100%;
     padding: 12px 0;
     text-align: center;
     font-size: medium;
+    color: white;
 }
 
 body .gamemode button:hover {
-    background-color: mediumaquamarine;
+    background-color: rgb(6, 19, 60);
+    color: aquamarine;
     cursor: pointer;
 }
-
-/*body .controls button {
-    background-color: white;
-    border: 1.5px solid black;
-    border-radius: 10px;
-    font-size: x-large;
-    color: mediumaquamarine;
-}
-
-body .controls button:hover {
-    background-color: rgb(134, 226, 195);
-    cursor: pointer;
-}*/
 
 body h2 {
-    padding-top: 5rem;
     padding-bottom: 2rem;
     text-align: center;
 }
 
-body .articles ul {
+.achievements, .friends {
+    display: flex;
+    height: 400px;
+    margin-top: 4rem;
+}
+
+.achievements span, .friends span {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+.achievements *, .friends * {
+    padding: 1rem;
+}
+
+.achievements p, .friends p {
+    position: relative;
+    z-index : 1;
+    color: rgb(176, 203, 227);
+}
+
+.achievements p:before, .friends p:before {
+    content: "";
+    position: absolute;
+    left    : -25%;
+    bottom  : -50px;
+    width   : 150%;
+    border-bottom:1px solid aquamarine;
+}
+
+div.img {
+    background-color: blanchedalmond;
+    width: 50%;
+    height: 368.2px;
+}
+
+.articles {
+    padding-top: 10rem;
+}
+
+.articles ul {
     list-style-type: none;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
+}
+
+.articles li {
+    background-color: aquamarine;
+    width: 35%;
+    height: 200px;
 }
 
 body .articles button {
@@ -112,4 +152,40 @@ body .articles button {
 
 .art5 article h2 {
     background-image: url("../../img/ia_lady.jpeg");
+}
+
+.about {
+    padding-top: 7rem;
+    height: 600px;
+}
+
+.about .bio {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.about .bio > div {
+    width: 50%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.about .bio img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.about p {
+    text-align: center;
+}
+
+.about h3 {
+    margin-top: 2rem;
+}
+
+.about .bio .description {
+    margin: 2rem 20%;
+    color: rgb(176, 203, 227);
 }
