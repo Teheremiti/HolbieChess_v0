@@ -50,7 +50,7 @@ body .gamemode button:hover {
     cursor: pointer;
 }
 
-body h2 {
+body section > h2 {
     padding-bottom: 2rem;
     text-align: center;
 }
@@ -82,20 +82,20 @@ body h2 {
 .achievements p:before, .friends p:before {
     content: "";
     position: absolute;
-    left    : -25%;
-    bottom  : -50px;
-    width   : 150%;
+    left: -25%;
+    bottom: -50px;
+    width: 150%;
     border-bottom:1px solid aquamarine;
 }
 
-div.img {
+section div.img {
     background-color: blanchedalmond;
     width: 50%;
     height: 368.2px;
 }
 
 .articles {
-    padding-top: 10rem;
+    padding: 5rem 0;
 }
 
 .articles ul {
@@ -105,58 +105,48 @@ div.img {
     justify-content: space-around;
 }
 
-.articles li {
-    background-color: aquamarine;
+.articles button {
     width: 35%;
     height: 200px;
-}
-
-body .articles button {
-    width: 35%;
     margin: 1rem 0;
-    border: 1px solid black;
     border-radius: 5px;
     cursor: pointer;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
 }
 
-.art1 article h2,
-.art2 article h2,
-.art3 article h2,
-.art4 article h2,
-.art5 article h2 {
-    color: lightgreen;
+.art1,
+.art2,
+.art3,
+.art4,
+.art5 {
+    color: aquamarine;
     text-align: start;
-    background-size : 100% 100%;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
 }
 
-.art1 article h2{
+.art1 {
     background-image: url("../../img/elo_ratings_pics.jpeg");
-
 }
 
-.art2 article h2 {
+.art2 {
     background-image: url("../../img/daily_puzzle_app.jpeg");
 }
 
-.art3 article h2 {
+.art3 {
     background-image: url("../../img/image_dailychess.png");
 }
 
-.art4 article h2 {
+.art4 {
     background-image: url("../../img/human_robot.png");
 }
 
-.art5 article h2 {
+.art5 {
     background-image: url("../../img/ia_lady.jpeg");
 }
 
 .about {
-    padding-top: 7rem;
-    height: 600px;
+    padding-top: 2rem;
+    min-height: 600px;
 }
 
 .about .bio {
