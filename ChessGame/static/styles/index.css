@@ -109,8 +109,49 @@ div.img {
     background-color: aquamarine;
     width: 35%;
     height: 200px;
+}
+
+body .articles button {
+    width: 35%;
     margin: 1rem 0;
+    border: 1px solid black;
     border-radius: 5px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.art1 article h2,
+.art2 article h2,
+.art3 article h2,
+.art4 article h2,
+.art5 article h2 {
+    color: lightgreen;
+    text-align: start;
+    background-size : 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.art1 article h2{
+    background-image: url("../../img/elo_ratings_pics.jpeg");
+
+}
+
+.art2 article h2 {
+    background-image: url("../../img/daily_puzzle_app.jpeg");
+}
+
+.art3 article h2 {
+    background-image: url("../../img/image_dailychess.png");
+}
+
+.art4 article h2 {
+    background-image: url("../../img/human_robot.png");
+}
+
+.art5 article h2 {
+    background-image: url("../../img/ia_lady.jpeg");
 }
 
 .about {
