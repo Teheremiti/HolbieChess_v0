@@ -28,8 +28,9 @@
 }
 
 .gamemode button {
-    background-color: white;
-    border: 1px solid black;
+    background-color: rgb(15, 30, 78);
+    border: 1px solid aquamarine;
+    color: white;
     border-radius: 10px;
     width: 150px;
     padding: 12px 0;
@@ -38,7 +39,7 @@
 }
 
 .gamemode button:hover {
-    background-color: mediumaquamarine;
+    background-color: rgb(6, 19, 60);;
     cursor: pointer;
 }
 
@@ -48,14 +49,15 @@
 }
 
 .controls button {
-    background-color: white;
-    border: 1px solid black;
+    background-color: rgb(15, 30, 78);
+    border: 1px solid aquamarine;
+    color: white;
     border-radius: 10px;
     font-size: large;
     padding: 0.5rem 0.5rem;
 }
 
 .controls button:hover {
-    background-color: rgb(134, 226, 195);
+    background-color: rgb(6, 19, 60);
     cursor: pointer;
 }
