@@ -21,9 +21,9 @@ class IA:
         self.white = chess.WHITE
         self.black = chess.BLACK
         self.pawn_value = 30
-        self.knight_value = 70
-        self.bishop_value = 70
-        self.rook_value = 100
+        self.knight_value = 50
+        self.bishop_value = 50
+        self.rook_value = 90
         self.queen_value = 500
         self.king_value = 900
     
@@ -35,9 +35,9 @@ class IA:
         if king_square is None:
             return safety_score  # King not found
 
-        # Evaluate king safety based on factors like pawn cover and enemy threats
-        enemy_attackers = len(board.attackers(not board.turn, king_square))
-        pawn_cover = self.check_pawn_cover(board, king_square)
+        # Evaluate king safety
+        enemy_attackers = len(board.attackers(not board.turn, king_square)) * 10
+        pawn_cover = self.check_pawn_cover(board, king_square) * 2
 
         safety_score = enemy_attackers - pawn_cover
 
@@ -45,7 +45,7 @@ class IA:
 
     def check_pawn_cover(self, board: chess.Board, king_square: int) -> int:
         """
-        Evaluate pawn cover for the king. A well-protected king will receive a higher score.
+        Evaluate pawn cover for the king. A well-protected king will receive a higher score
         """
         pawn_cover_score = 0
 
@@ -58,7 +58,7 @@ class IA:
                     square = chess.square(i, j)
                     if board.piece_at(square) == chess.Piece(self.pawn, board.turn):
                         pawn_cover_score += 1
-
+        #print("pawn cover score : ", pawn_cover_score)
         return pawn_cover_score
     
     def get_piece_value(self, piece: chess.Piece) -> int:
@@ -98,9 +98,9 @@ class IA:
         castling_score = 0
 
         if board.has_kingside_castling_rights(board.turn):
-            castling_score += 10  # Encourage kingside castling
+            castling_score += 200  # Encourage kingside castling
         if board.has_queenside_castling_rights(board.turn):
-            castling_score += 10  # Encourage queenside castling
+            castling_score += 200  # Encourage queenside castling
 
         return castling_score  
         
@@ -240,40 +240,57 @@ class IA:
             # Scan through all squares on the board
             piece = board.piece_at(i)
             if piece != None:
-                king_safety_value = self.check_king_safety(board)
-                pawn_cover_value = self.check_pawn_cover(board, board.king(board.turn))
-                castling_value = self.evaluate_castling(board)
-                pawn_structure_value = self.evaluate_pawn_structure(board)
-                total_value = king_safety_value + pawn_cover_value + castling_value + pawn_structure_value
+                #king_safety_value = self.check_king_safety(board)
+                #pawn_cover_value = self.check_pawn_cover(board, board.king(board.turn))
+                #castling_value = self.evaluate_castling(board)
+                #total_value = castling_value #+ castling_value #+ pawn_structure_value
+                #print("king safety value for {} :{} ".format(king_safety_value, board.turn))
+                #print("pawn cover value for {} :{} ".format(pawn_cover_value, board.turn))
+                ##print("castling value for {} :{} ".format(castling_value, board.turn))
+                #print("total value for {} :{} ".format(total_value, board.turn))
                 # Add value for white pieces and subtract for black pieces
                 if piece.color == chess.WHITE:
-                    value += total_value
+                    #value += total_value
                     if self.check_piece_development(board, i, chess.WHITE):
                         value += 9
                     if i in center_squares:
                         value += 20
                     elif i in almost_center_squares:
-                        value += 8
+                        value += 10
                     elif i is chess.KNIGHT and i in outer_squares:
-                        value -= 20
+                        value -= 70
                     value += self.get_piece_value(piece)
                 elif piece.color == chess.BLACK:
-                    value -= total_value
+                    #value -= total_value
                     if self.check_piece_development(board, i, chess.BLACK):
                         value -= 9
                     if i in center_squares:
                         value -= 20
                     elif i in almost_center_squares:
-                        value -= 9
+                        value -= 10
                     elif i is chess.KNIGHT and i in outer_squares:
-                        value += 20
+                        value += 70
                     value += self.get_piece_value(piece)
         return value
+    
+    def calculate_risk_score(self, board: chess.Board) -> int:
+        risk_score = 0
+
+        # Check king safety
+        king_safety_score = self.check_king_safety(board)
+        risk_score += king_safety_score
+
+        # Evaluate pawn structure
+        pawn_structure_score = self.evaluate_pawn_structure(board)
+        risk_score += pawn_structure_score
+
+        return risk_score
     
     def choose_move(self, board, depth: int, alpha: float, beta: float, maximizing_player: bool) -> chess.Move:
         # Choose move function
         # Returns the best move
         best_move = None
+        risk_score = ia.calculate_risk_score(board)
 
         if maximizing_player:
             best_value = -float('inf')
@@ -282,12 +299,6 @@ class IA:
 
         for move in board.legal_moves:
             board.push(move)
-
-            # Handle early game queen moves
-            #if board.fullmove_number <= 1 and ('q' in board.san(move) or "Q" in board.san(move)):
-            #    board.pop()
-            #    continue                
-
             # Check for checkmate scenarios
             if board.is_checkmate() and maximizing_player:
                 board.pop()
@@ -301,18 +312,22 @@ class IA:
             board.pop()
 
             if maximizing_player:
-                if current_score > best_value:
+                current_score -= risk_score
+                if current_score >= best_value:
                     best_value = current_score
                     best_move = move
                 alpha = max(alpha, best_value)
             else:
-                if current_score < best_value:
+                current_score += risk_score
+                if current_score <= best_value:
                     best_value = current_score
                     best_move = move
                 beta = min(beta, best_value)
 
             if beta <= alpha:
                 break
+        print("best move : ", best_move)
+        print("best value : ", best_value)
         return best_move
     
     def minimax(self, board: chess.Board, depth: int, alpha: float, beta: float, maximizing_player: bool) -> float:
@@ -323,10 +338,10 @@ class IA:
             best_score = -float('inf')
             for move in board.legal_moves:
                 board.push(move)
-                if board.is_castling(move):
-                    print("castling move blanc : ", move)
-                    current_score += 10000
                 if board.piece_at(move.to_square).piece_type == chess.QUEEN:
+                    if board.fullmove_number <= 5:
+                        board.pop()
+                        continue
                     if self.is_queen_safe(board, move.to_square):
                         current_score = self.evaluate_board(board) + 40
                     else:
@@ -343,9 +358,6 @@ class IA:
             best_score = float('inf')
             for move in board.legal_moves:
                 board.push(move)
-                if board.is_castling(move):
-                    print("castling move noir : ", move)
-                    current_score -= 10000
                 if board.piece_at(move.to_square).piece_type == chess.QUEEN:
                     if self.is_queen_safe(board, move.to_square):
                         current_score = self.evaluate_board(board) - 40
@@ -375,3 +387,35 @@ potential_moves = [
     "g1f3",
     "b1c3"
 ]
+board = chess.Board()
+#try:
+#    with open("game_fens.json", "w") as f:
+#        for _ in range(10): # Loop the game until it's over
+#            #user_move = self.read_from_json()  # Get the move from JSON
+#            #user_move = input("Enter your move: ")
+#            if board.is_repetition(3) or board.is_stalemate() or board.is_insufficient_material() or board.is_fifty_moves():
+#                print("Draw!")
+#                break
+#            if board.fullmove_number <= 1:
+#               board.push_san(random.choice(potential_moves))
+#            else:
+#                user_move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+#                board.push_san(str(user_move))  # Push the user's move
+#            print("white moved en dessous")   
+#            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
+#            print(board)
+#            if board.is_game_over():
+#                break
+#            move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+#            board.push(move)
+#            print("black moved en dessous")
+#            print(board)
+#            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
+#            
+#        json.dump(game_fens,f)
+#   
+#   
+#except KeyboardInterrupt:
+#    pass
+#finally:
+#    print("bien ouej")
