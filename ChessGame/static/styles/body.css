@@ -38,6 +38,7 @@ body .side_banner li {
 
 body .side_banner li:hover {
     background-color: aquamarine;
+    color: rgb(6, 19, 60);
     cursor: pointer;
 }
 

@@ -144,11 +144,7 @@ div.img {
     margin-top: 2rem;
 }
 
-/*.socials a {
-
-}*/
-
 .about .bio .description {
-    margin: 2rem 5rem;
+    margin: 2rem 20%;
     color: rgb(176, 203, 227);
 }
