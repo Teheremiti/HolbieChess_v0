@@ -43,6 +43,12 @@
     cursor: pointer;
 }
 
+.congratulations {
+    text-align: center;
+    font-size: x-large;
+    margin-top: auto;
+}
+
 .controls {
     margin-top: auto;
     text-align: center;

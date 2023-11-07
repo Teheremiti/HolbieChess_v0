@@ -21,23 +21,12 @@
 <body>
   <!-- Header -->
   <header>
-    <div class="homepage">
-      <a href="#">
-        <div class="logo">
-          <img src="../img/holbielogo.png" alt="holbielogo">
-        </div>
-        <h1> Holbie Chess </h1>
-      </a>
-    </div>
-    <div class="user">
-      <div class="searchbar"></div>
-      <div class="usericon">
-        <!-- if not logged in -->
-        <a href={{ url_for('register') }}><img src='../img/usericon.png' alt="usericon"></a>
-        <!-- if logged in -->
-        <!-- Display profile pic & redirect to user page on click  -->
+    <a href="#">
+      <div class="logo">
+        <img src="../img/holbielogo.png" alt="holbielogo">
       </div>
-    </div>
+      <h1> Holbie Chess </h1>
+    </a>
   </header>
 
   <main>
@@ -45,8 +34,7 @@
     <!-- Side banner -->
     <ul class="side_banner">
       <a href="./play.html?mode=computer"><li>Play</li></a>
-      <a href="./achievements.html"><li>Achievements</li></a>
-      <a href="./friends.html"><li>Friends</li></a>
+      <a href="./play.html?mode=puzzle"><li>Daily Puzzle</li></a>
       <a href="#news"><li>News</li></a>
       <a href="#about"><li>About us</li></a>
     </ul>
@@ -67,58 +55,61 @@
         <div class="play">
           <h2> Let's play ! </h2>
           <span class="gamemode">
-            <button type="button" class="local"> 1v1 </button>
-            <button type="button" class="computer"> Computer </button> 
+            <button type="button" onclick="window.location.href='./play.html?mode=1v1'"> 1v1 </button>
+            <button type="button" onclick="window.location.href='./play.html?mode=computer'"> Computer </button>
+            <button type="button" onclick="window.location.href='./play.html?mode=puzzle'"> Daily Puzzle </button>
           </span>
         </div>
       </section>
 
-      <section class="achievements">
-        <span>
-          <h2> Keep track of your achievements </h2>
-          <p> Unlock trophies by completing hidden tasks </p>
-        </span>
+      <section class="ai">
+        <div>
+          <h2> Get better everyday with a chess bot </h2>
+          <p> Play agaisnt a handmade Python AI wherever you are </p>
+        </div>
         <div class="img"></div>
         <!-- Put a preview gif of how to add friends -->
       </section>
 
-      <section class="friends">
+      <section class="daily">
         <div class="img"></div>
         <!-- Put a preview gif of how to add friends -->
-        <span>
-          <h2> Don't forget to make friends on the way </h2>
-          <p> Compare your skills and play against each other locally </p>
-        </span>
+        <div>
+          <h2> Daily puzzles </h2>
+          <p> Take on the role of chess icons and recreate historical mates </p>
+        </div>
       </section>
 
-      <section id="news" class="articles">
+      <!--<section id="news" class="articles">
         <h2> Follow the latest news </h2>
         <ul>
-            <button class= "art1" onclick="window.location.href='https://ratings.fide.com/'">
-              <li>
-                <article><h2> FIDE ratings </h2></article>
-              </li>
-            </button>
-            <button class = "art2" onclick="window.location.href='https://www.chess.com/daily-chess-puzzle'">
-              <li>
-                <article><h2> Daily Puzzle </h2></article>
-              </li>
-            </button>
-            <button class = "art3" onclick="window.location.href='https://chessdailynews.com/'">
-              <li><article><h2> Daily Chess News </h2></article>
-              </li>
-            </button>
-            <button class = "art4" onclick="window.location.href='https://escharts.com/upcoming-tournaments/chess'">
-              <li>
-                <article><h2> Upcoming E Chess Events </h2></article>
-              </li>
-            </button>
-            <button class = "art5" onclick="window.location.href='https://championschesstour.com/ai-cup/'">
-              <li><article><h2> AI Cup </h2></article>
-              </li>
-            </button>
+          <button class="art0" onclick="window.open('http://www.reddit.com/r/chess/new', '_blank')">
+            <li>
+              <article><h2> get reddit post title from api </h2></article>
+            </li>
+          </button>
+          <button class="art1" onclick="window.location.href='https://ratings.fide.com/'">
+            <li>
+              <article><h2> FIDE ratings </h2></article>
+            </li>
+          </button>
+          <button class="art3" onclick="window.location.href='https://chessdailynews.com/'">
+            <li>
+              <article><h2> Daily Chess News </h2></article>
+            </li>
+          </button>
+          <button class="art4" onclick="window.location.href='https://escharts.com/upcoming-tournaments/chess'">
+            <li>
+              <article><h2> Upcoming E Chess Events </h2></article>
+            </li>
+          </button>
+          <button class="art5" onclick="window.location.href='https://championschesstour.com/ai-cup/'">
+            <li>
+              <article><h2> AI Cup </h2></article>
+            </li>
+          </button>
         </ul>
-      </section>
+      </section>-->
 
       <section id="about" class="about">
         <h2> About us </h2>

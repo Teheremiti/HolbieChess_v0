@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   var game = new Chess();
   var mode = new URLSearchParams(window.location.search).get('mode');
   var $history = $('.history');
+  var $congratulations = $('.congratulations');
 
   function isGameOver() {
     return game.in_checkmate() || game.in_draw() || game.in_stalemate() ||
@@ -42,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Send move to JSON
         write_to_json(move);
+
+        if (isGameOver()) {
+          $congratulations.text(`${game.turn() === 'w' ? 'Black' : 'White'} won !`);
+        }
       })
       .catch(err => {
         console.error('Error communicating with chess IA:', err);
@@ -50,6 +55,37 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(err);
       throw err;
     }
+  }
+
+  function loadDailyPuzzle () {
+    axios.get('https://lichess.org/api/puzzle/daily')
+      .then(response => {
+        const dailyPuzzle = { "pgn": response.data.game.pgn, "solution": response.data.puzzle.solution };
+        console.log(dailyPuzzle);
+
+        const game_pgn = dailyPuzzle.pgn.split(' ');
+        const last_move = game_pgn.pop();
+        console.log(last_move);
+
+        game.load_pgn(game_pgn.join());
+        board = Chessboard('board', {
+          position: game.fen(),
+          orientation: game.turn() === 'b' ? 'white' : 'black',
+          pieceTheme: pieceTheme,
+          draggable: true,
+          onDragStart: onDragStart,
+          onDrop: onDrop,
+          onMouseoutSquare: onMouseoutSquare,
+          onMouseoverSquare: onMouseoverSquare,
+          onSnapEnd: onSnapEnd,
+        });
+
+        game.move(last_move);
+        board.position(game.fen());
+        $history.html(`<p><strong>Moves log:</strong><br>${game.pgn()}</p>`);
+        return dailyPuzzle.solution;
+      })
+      .catch(err => console.error(err));
   }
 
   var greySquare = function (square) {
@@ -114,12 +150,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (move === null) return 'snapback';
     console.log(`User move: ${move.san}`);
 
-    // Make IA move
     if (mode === 'computer' && !isGameOver()) {
       window.setTimeout(makeHolbieMove, 250);
     }
 
-    // Push the move to history
     $history.html(`<p><strong>Moves log:</strong><br>${game.pgn()}</p>`);
   };
 
@@ -128,33 +162,34 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mode === '1v1' && !isGameOver()) {
       board.flip();
     }
+    if (isGameOver()) {
+      $congratulations.text(`${game.turn() === 'w' ? 'Black' : 'White'} won !`);
+    }
   };
 
-  const config = {
-    // Set the orientation randomly if playing against computer
-    orientation: mode === '1v1' ? 'white' : Math.random() > 0.5 ? 'white' : 'black',
-    pieceTheme: pieceTheme,
-    draggable: true,
-    position: 'start',
-    onDragStart: onDragStart,
-    onDrop: onDrop,
-    onMouseoutSquare: onMouseoutSquare,
-    onMouseoverSquare: onMouseoverSquare,
-    onSnapEnd: onSnapEnd,
+  if (mode === 'puzzle') {
+    const dailySolution = loadDailyPuzzle();
+    // +++ Implement: Remove restart button for puzzle mode
+
+  } else {
+    const randomOrientation = Math.random() > 0.5 ? 'white' : 'black';
+    const config = {
+      orientation: mode === 'computer' ? randomOrientation : 'white',
+      pieceTheme: pieceTheme,
+      draggable: true,
+      position: 'start',
+      onDragStart: onDragStart,
+      onDrop: onDrop,
+      onMouseoutSquare: onMouseoutSquare,
+      onMouseoverSquare: onMouseoverSquare,
+      onSnapEnd: onSnapEnd,
+    }
+
+    board = Chessboard('board', config);
+    if (board.orientation() === 'black') {
+      window.setTimeout(makeHolbieMove, 250);
+    }
   }
-
-  board = Chessboard('board', config);
-  if (board.orientation() === 'black') {
-    window.setTimeout(makeHolbieMove, 250);
-  }
-
-  $('button.local').on('click', () => {
-    window.location.replace('/play.html?mode=1v1');
-  })
-
-  $('button.computer').on('click', () => {
-    window.location.replace('./play.html?mode=computer');
-  })
 
   var last_moves = [];
   $('button.previous').on('click', () => {

@@ -16,36 +16,25 @@
     <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
     <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
     <link rel="stylesheet" type="text/css" href="../static/styles/play.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="module" src="../static/scripts/play.js"></script>
 </head>
 
 <body>
     <header>
-        <div class="homepage">
-            <a href="./index.html">
-                <div class="logo">
-                    <img src="../img/holbielogo.png" alt="holbielogo">
-                </div>
-                <h1> Holbie Chess </h1>
-            </a>
-        </div>
-        <div class="user">
-            <div class="searchbar"></div>
-            <div class="usericon">
-              <!-- if not logged in -->
-              <a href={{ url_for('register') }}><img src='../img/usericon.png' alt="usericon"></a>
-              <!-- if logged in -->
-              <!-- Display profile pic & redirect to user page on click  -->
+        <a href="./index.html">
+            <div class="logo">
+                <img src="../img/holbielogo.png" alt="holbielogo">
             </div>
-        </div>
+            <h1> Holbie Chess </h1>
+        </a>
     </header>
 
     <main>
         <!-- Side banner -->
         <ul class="side_banner">
             <li>Play</li>
-            <a href="./achievements.html"><li>Achievements</li></a>
-            <a href="./friends.html"><li>Friends</li></a>
+            <a href="./play.html?mode=puzzle"><li>Daily Puzzle</li></a>
             <a href="./index.html#news"><li>News</li></a>
             <a href="./index.html#about"><li>About us</li></a>
         </ul>
@@ -64,11 +53,14 @@
 
             <section class="aside">
                 <div class="gamemode">
-                    <button type="button" class="local"> 1v1 </button>
-                    <button type="button" class="computer"> Computer </button> 
+                    <button type="button" onclick="window.location.replace('./play.html?mode=1v1')"> 1v1 </button>
+                    <button type="button" onclick="window.location.replace('./play.html?mode=computer')"> Computer </button>
+                    <button type="button" onclick="window.location.replace('./play.html?mode=puzzle')"> Daily puzzle </button>
                 </div>
 
                 <div class="history"></div>
+
+                <div class="congratulations"></div>
 
                 <div class="controls">
                     <button type="button" class="previous"> back </button>
@@ -80,7 +72,8 @@
     </main>
 
     <footer>
-        <p> Made by Teheremiti & Tristan </p>
+        <p> Made for <a href="https://www.holbertonschool.fr/" target="_blank"> Holberton School </a></p>
+        <p> See the <a href="https://github.com/Teheremiti/HolbieChess_v0" target="_blank">GitHub repository</a> for this project </p>
     </footer>
 </body>
 </html>

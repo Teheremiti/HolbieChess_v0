@@ -326,8 +326,8 @@ class IA:
 
             if beta <= alpha:
                 break
-        print("best move : ", best_move)
-        print("best value : ", best_value)
+        #print("best move : ", best_move)
+        #print("best value : ", best_value)
         return best_move
     
     def minimax(self, board: chess.Board, depth: int, alpha: float, beta: float, maximizing_player: bool) -> float:
