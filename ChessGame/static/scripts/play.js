@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
            game.in_threefold_repetition() || game.insufficient_material();
   }
 
-  function write_to_json(game_fen) {
+  function write_to_json(game) {
     try {
-      const jsonData = JSON.stringify(game_fen);
-      localStorage.setItem('game_fen.json', jsonData);
+      const jsonData = JSON.stringify(game);
+      localStorage.setItem('game.json', jsonData);
     } catch (err) {
       console.error(err);
       throw err;
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function makeHolbieMove () {
     write_to_json(game.fen());
     try {
-      const game_fen = localStorage.getItem('game_fen.json');
+      const game_fen = localStorage.getItem('game.json');
       fetch('/IAMove', {
         method: 'POST',
         headers: {
@@ -33,19 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then(response => response.json())
       .then(move => {
-        console.log('Response from IA: ', move);
-        console.log('-----------------')
+        //console.log('Response from IA: ', move);
+        //console.log('-----------------');
         game.move(move);
         board.position(game.fen());
 
-        // Push move to history
         $history.html(`<p><strong>Moves log:</strong><br>${game.pgn()}</p>`);
 
-        // Send move to JSON
         write_to_json(move);
 
         if (isGameOver()) {
-          $congratulations.text(`${game.turn() === 'w' ? 'Black' : 'White'} won !`);
+          $congratulations.html(`${game.turn() === 'w' ? 'Black' : 'White'} won :/<br>
+                                 Better luck next time`);
         }
       })
       .catch(err => {
@@ -61,12 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
     axios.get('https://lichess.org/api/puzzle/daily')
       .then(response => {
         const dailyPuzzle = { "pgn": response.data.game.pgn, "solution": response.data.puzzle.solution };
-        console.log(dailyPuzzle);
+        write_to_json(dailyPuzzle.solution);
+        const jsonData = localStorage.getItem('game.json');
+        console.log('writing to json....', jsonData);
 
         const game_pgn = dailyPuzzle.pgn.split(' ');
         const last_move = game_pgn.pop();
-        console.log(last_move);
-
         game.load_pgn(game_pgn.join());
         board = Chessboard('board', {
           position: game.fen(),
@@ -83,9 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
         game.move(last_move);
         board.position(game.fen());
         $history.html(`<p><strong>Moves log:</strong><br>${game.pgn()}</p>`);
-        return dailyPuzzle.solution;
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error(err))
   }
 
   var greySquare = function (square) {
@@ -108,21 +106,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function onMouseoverSquare (square, piece) {
-    // get list of possible moves for this square
-    var moves = game.moves({
-      square: square,
-      verbose: true
-    })
+    const gameTurn = game.turn() === 'w' ? 'white' : 'black'; 
+    if (gameTurn === board.orientation()) {
+      // get list of possible moves for this square
+      var moves = game.moves({
+        square: square,
+        verbose: true
+      })
 
-    // exit if there are no moves available for this square
-    if (moves.length === 0) return
+      // exit if there are no moves available for this square
+      if (moves.length === 0) return
 
-    // highlight the square moused over
-    greySquare(square)
+      // highlight the square moused over
+      greySquare(square)
 
-    // highlight the possible squares for this piece
-    for (var i = 0; i < moves.length; i++) {
-      greySquare(moves[i].to)
+      // highlight the possible squares for this piece
+      for (var i = 0; i < moves.length; i++) {
+        greySquare(moves[i].to)
+      }
     }
   }
 
@@ -131,27 +132,55 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function onDragStart (source, piece, position, orientation) {
-    if (isGameOver() ||
-        (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-      return false;
+    const whiteDraggableOnly = piece.search(/^w/) !== -1;
+    const blackDraggableOnly = piece.search(/^b/) !== -1;
+
+    if (mode === 'puzzle') {
+      if ((isGameOver() ||
+          (orientation === 'white' && blackDraggableOnly) ||
+          (orientation === 'black' && whiteDraggableOnly))) {
+            return false;
+          }
+    } else {
+      if (isGameOver() ||
+          (game.turn() === 'w' && blackDraggableOnly) ||
+          (game.turn() === 'b' && whiteDraggableOnly)) {
+            return false;
+      }
     }
   }
 
   var onDrop = function (source, target) {
     removeGreySquares();
-
-    var move = game.move({
-      from: source,
-      to: target,
-      promotion: 'q'
-    });
-
+    var move;
+    if (mode === 'puzzle' && `${source}${target}` !== dailySolution[0]) {
+      move = null;
+    } else {
+      move = game.move({
+        from: source,
+        to: target,
+        promotion: 'q'
+      });
+    }
     if (move === null) return 'snapback';
-    console.log(`User move: ${move.san}`);
+
+    //console.log(`User move: ${move.san}`);
 
     if (mode === 'computer' && !isGameOver()) {
-      window.setTimeout(makeHolbieMove, 250);
+      makeHolbieMove();
+    } else if (mode === 'puzzle' && !isGameOver()) {
+      if (dailySolution.length > 1) dailySolution.shift();
+      if (dailySolution.length > 1) {
+        const nextMove = dailySolution.shift();
+        const squares = {
+          from: nextMove.substr(0, 2),
+          to: nextMove.substr(2, 3),
+        }
+        game.move(squares);
+      } else {
+        $congratulations.html('<p>Great job! Come back tomorrow</br>or visit\
+                               <a href="https://lichess.org/training/daily" target="_blank">Lichess.org</a> for more problems');
+      }
     }
 
     $history.html(`<p><strong>Moves log:</strong><br>${game.pgn()}</p>`);
@@ -162,15 +191,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mode === '1v1' && !isGameOver()) {
       board.flip();
     }
-    if (isGameOver()) {
+    if (isGameOver() && (mode !== 'puzzle')) {
       $congratulations.text(`${game.turn() === 'w' ? 'Black' : 'White'} won !`);
     }
   };
 
+//==============================================================================
   if (mode === 'puzzle') {
-    const dailySolution = loadDailyPuzzle();
-    // +++ Implement: Remove restart button for puzzle mode
+    // The following code doesn't wait for loadDailyPuzzle() to finish
+    // --> if game.json was not empty, the jsonData will be its previous content
+    loadDailyPuzzle();
+    const jsonData = localStorage.getItem('game.json');
+    console.log('afterLoad', jsonData);
+    var dailySolution = JSON.parse(jsonData);
 
+    $('.restartBtn').html('');
+    $('.disclaimer').html('* Daily puzzles are powered by the <a href="https://lichess.org/api" target="_blank">Lichess.org API</a>\
+      We do not claim any type of ownership over their content.');
   } else {
     const randomOrientation = Math.random() > 0.5 ? 'white' : 'black';
     const config = {
@@ -187,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     board = Chessboard('board', config);
     if (board.orientation() === 'black') {
-      window.setTimeout(makeHolbieMove, 250);
+      makeHolbieMove();
     }
   }
 

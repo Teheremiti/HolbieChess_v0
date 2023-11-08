@@ -32,45 +32,49 @@
 
     <main>
         <!-- Side banner -->
-        <ul class="side_banner">
-            <li>Play</li>
-            <a href="./play.html?mode=puzzle"><li>Daily Puzzle</li></a>
-            <a href="./index.html#news"><li>News</li></a>
-            <a href="./index.html#about"><li>About us</li></a>
-        </ul>
+        <div class="side_banner">
+            <ul>
+                <li>Play</li>
+                <a href="./play.html?mode=puzzle"><li>Daily Puzzle</li></a>
+                <a href="./index.html#news"><li>News</li></a>
+                <a href="./index.html#about"><li>About us</li></a>
+            </ul>
+        </div>
 
         <div class="common">
-            <section class="game">
-                <div id="board"></div>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
-                <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-                    integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
-                    crossorigin="anonymous"></script>
-                <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
-                    integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
-                    crossorigin="anonymous"></script>
-            </section>
+            <div class="game">
+                <section class="board">
+                    <div id="board"></div>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
+                    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+                        integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
+                        crossorigin="anonymous"></script>
+                    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
+                        integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
+                        crossorigin="anonymous"></script>
+                </section>
 
-            <section class="aside">
-                <div class="gamemode">
-                    <button type="button" onclick="window.location.replace('./play.html?mode=1v1')"> 1v1 </button>
-                    <button type="button" onclick="window.location.replace('./play.html?mode=computer')"> Computer </button>
-                    <button type="button" onclick="window.location.replace('./play.html?mode=puzzle')"> Daily puzzle </button>
-                </div>
+                <section class="aside">
+                    <div class="gamemode">
+                        <button type="button" onclick="window.location.replace('./play.html?mode=1v1')"> 1v1 </button>
+                        <button type="button" onclick="window.location.replace('./play.html?mode=computer')"> Computer </button>
+                        <button type="button" onclick="window.location.replace('./play.html?mode=puzzle')"> Daily puzzle </button>
+                    </div>
 
-                <div class="history"></div>
+                    <div class="history"></div>
 
-                <div class="congratulations"></div>
+                    <div class="congratulations"></div>
 
-                <div class="controls">
-                    <button type="button" class="previous"> back </button>
-                    <button type="button" class="next"> next </button>
-                    <button type="button" class="restart"> restart </button>
-                </div>
-            </section>
+                    <div class="controls">
+                        <button type="button" class="previous"> back </button>
+                        <button type="button" class="next"> next </button>
+                        <span class="restartBtn"><button type="button" class="restart"> restart </button></span>
+                    </div>
+                </section>
+            </div>
+            <p class="disclaimer"></p>
         </div>
     </main>
-
     <footer>
         <p> Made for <a href="https://www.holbertonschool.fr/" target="_blank"> Holberton School </a></p>
         <p> See the <a href="https://github.com/Teheremiti/HolbieChess_v0" target="_blank">GitHub repository</a> for this project </p>

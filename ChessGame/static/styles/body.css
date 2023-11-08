@@ -2,7 +2,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: rgb(6, 19, 60);
+    background-color: rgb(15, 30, 78);
 }
 
 body main {
@@ -10,13 +10,17 @@ body main {
     color: white;
 }
 
-body main .side_banner {
-    position: sticky;
-    top: 4rem;
-    background-color: rgb(6, 19, 60);
-    color: white;
+body .side_banner {
+    min-height: 100vh;
     min-width: 120px;
     width: 150px;
+    background-color: rgb(6, 19, 60);
+}
+
+body .side_banner ul {
+    position: sticky;
+    top: 4rem;
+    color: white;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -24,6 +28,10 @@ body main .side_banner {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+}
+
+body .side_banner ul {
+    height: 550px;
 }
 
 body .side_banner li {
@@ -54,6 +62,18 @@ body .side_banner li:before {
 
 body .common {
     width: 100%;
-    min-height: 86.8vh;
-    background-color: rgb(15, 30, 78);
+    min-height: 100vh;
+}
+
+.common > p {
+    color: rgb(176, 203, 227);
+    font-size: 10px;
+}
+
+.common > p a {
+    text-decoration: underline;
+}
+
+.common > p a:hover {
+    color: rgb(49, 141, 194);
 }
