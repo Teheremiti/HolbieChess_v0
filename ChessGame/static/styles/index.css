@@ -101,7 +101,11 @@ body section > h2 {
 }
 
 section div.img {
-    /*background-color: blanchedalmond;*/
+    width: 50%;
+    height: 368.2px;
+}
+
+section div.img {
     width: 50%;
     height: 368.2px;
 }
@@ -123,7 +127,13 @@ section div.img {
     background-size: cover;
 }
 
+/*.art1,
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .art1,
+.art2,
 .art3,
 .art4,
 .art5 {
@@ -133,7 +143,10 @@ section div.img {
 
 .art1 {
     background-image: url("../../img/elo_ratings_pics.jpeg");
+}
 
+.art2 {
+    background-image: url("../../img/daily_puzzle_app.jpeg");
 }
 
 .art3 {
@@ -146,7 +159,7 @@ section div.img {
 
 .art5 {
     background-image: url("../../img/ia_lady.jpeg");
-}
+}*/
 
 .about {
     min-height: 600px;

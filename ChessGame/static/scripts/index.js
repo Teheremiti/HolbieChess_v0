@@ -9,12 +9,4 @@ document.addEventListener("DOMContentLoaded", () => {
     position: 'start',
     draggable: false
   });
-
-  $('button.local').on('click', () => {
-    window.location.href = '/play.html?mode=1v1';
-  })
-
-  $('button.computer').on('click', () => {
-    window.location.href = '/play.html?mode=computer';
-  })
 })
