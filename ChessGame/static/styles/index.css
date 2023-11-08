@@ -1,5 +1,9 @@
-body .common .game {
-    margin-top: 2rem;
+/*body .common {
+    background-color: red;
+    margin-top: 5rem;
+}*/
+body .game {
+    margin: 8% 0;
     display: flex;
     width: 100%;
 }
@@ -29,7 +33,7 @@ body .gamemode {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 120px;
+    height: 180px;
     justify-content: space-around;
 }
 
@@ -55,13 +59,16 @@ body section > h2 {
     text-align: center;
 }
 
-.achievements, .friends {
+.ai, .daily {
     display: flex;
     height: 400px;
-    margin-top: 4rem;
 }
 
-.achievements span, .friends span {
+.articles, .about {
+    padding-top: 5rem;
+}
+
+.ai div:first-of-type , .daily div:last-of-type {
     display: flex;
     flex-flow: column nowrap;
     width: 50%;
@@ -69,33 +76,38 @@ body section > h2 {
     justify-content: center;
 }
 
-.achievements *, .friends * {
+.ai *, .daily * {
     padding: 1rem;
 }
 
-.achievements p, .friends p {
+.ai p, .daily p {
     position: relative;
     z-index : 1;
     color: rgb(176, 203, 227);
 }
 
-.achievements p:before, .friends p:before {
+.ai p:before, .daily p:before {
     content: "";
     position: absolute;
     left: -25%;
     bottom: -50px;
     width: 150%;
-    border-bottom:1px solid aquamarine;
+    border-bottom: 1px solid aquamarine;
+}
+
+.daily p:before {
+    left: -20%;
+    width: 140%;
 }
 
 section div.img {
-    background-color: blanchedalmond;
     width: 50%;
     height: 368.2px;
 }
 
-.articles {
-    padding: 5rem 0;
+section div.img {
+    width: 50%;
+    height: 368.2px;
 }
 
 .articles ul {
@@ -109,6 +121,13 @@ section div.img {
     width: 35%;
     height: 200px;
     margin: 1rem 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-size: cover;
+}
+
+/*.art1,
     border-radius: 5px;
     cursor: pointer;
 }
@@ -120,8 +139,6 @@ section div.img {
 .art5 {
     color: aquamarine;
     text-align: start;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
 }
 
 .art1 {
@@ -142,10 +159,9 @@ section div.img {
 
 .art5 {
     background-image: url("../../img/ia_lady.jpeg");
-}
+}*/
 
 .about {
-    padding-top: 2rem;
     min-height: 600px;
 }
 
