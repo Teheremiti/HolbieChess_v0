@@ -55,7 +55,7 @@ body section > h2 {
     text-align: center;
 }
 
-.ai, .daily {
+.ai, .puzzle {
     display: flex;
     height: 400px;
 }
@@ -64,7 +64,7 @@ body section > h2 {
     padding-top: 5rem;
 }
 
-.ai div:first-of-type , .daily div:last-of-type {
+.ai div:first-of-type , .puzzle div:last-of-type {
     display: flex;
     flex-flow: column nowrap;
     width: 50%;
@@ -72,17 +72,17 @@ body section > h2 {
     justify-content: center;
 }
 
-.ai *, .daily * {
+.ai *, .puzzle * {
     padding: 1rem;
 }
 
-.ai p, .daily p {
+.ai p, .puzzle p {
     position: relative;
     z-index : 1;
     color: rgb(176, 203, 227);
 }
 
-.ai p:before, .daily p:before {
+.ai p:before, .puzzle p:before {
     content: "";
     position: absolute;
     left: -25%;
@@ -91,7 +91,7 @@ body section > h2 {
     border-bottom: 1px solid aquamarine;
 }
 
-.daily p:before {
+.puzzle p:before {
     left: -20%;
     width: 140%;
 }
@@ -99,6 +99,9 @@ body section > h2 {
 section div.img {
     width: 50%;
     height: 368.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .articles ul {

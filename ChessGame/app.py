@@ -20,6 +20,10 @@ def loadpage(page):
 def image(filename):
     return send_from_directory('img', filename)
 
+@app.route('/gif/<filename>', methods=['GET'])
+def gif(filename):
+    return send_from_directory('gif', filename)
+
 # AI move generation
 ia = IA()
 @app.route('/IAMove', methods=['POST'])
