@@ -25,7 +25,7 @@ class IA:
         self.bishop_value = 50
         self.rook_value = 90
         self.queen_value = 200
-        self.king_value = 900
+        self.king_value = 10000000000
     
     def check_king_safety(self, board: chess.Board) -> int:
         #Checks for king safety
@@ -37,9 +37,9 @@ class IA:
 
         # Evaluate king safety
         enemy_attackers = len(board.attackers(not board.turn, king_square)) * 10
-        pawn_cover = self.check_pawn_cover(board, king_square) * 2
+        #pawn_cover = self.check_pawn_cover(board, king_square) * 2
 
-        safety_score = enemy_attackers - pawn_cover
+        safety_score = enemy_attackers# - pawn_cover
 
         return safety_score
 
@@ -172,25 +172,25 @@ class IA:
             return True # If queen close to her king, Queen happy
         return False # Defaults to undefended
     
-    def check_capture(self, board: chess.Board, move: chess.Move) -> int:   
-        initial_material_balance = self.evaluate_board(board)
-        if board.is_capture(move):
-            from_piece = board.piece_at(move.from_square)
-            to_piece = board.piece_at(move.to_square)
-        
-            if from_piece is not None and to_piece is not None:
-                capturing_piece = self.get_piece_value(from_piece)
-                captured_piece = self.get_piece_value(to_piece)
-                if board.turn is chess.WHITE:
-                    final_material_balance = initial_material_balance - captured_piece + capturing_piece
-                    if final_material_balance >= initial_material_balance:
-                        return final_material_balance
-                if board.turn is chess.BLACK:
-                    final_material_balance = initial_material_balance + captured_piece - capturing_piece
-                    if final_material_balance <= initial_material_balance:
-                        return final_material_balance
-
-        return 0  # If the move is not a capture, return False
+    #def check_capture(self, board: chess.Board, move: chess.Move) -> int:   
+    #    initial_material_balance = self.evaluate_board(board)
+    #    if board.is_capture(move):
+    #        from_piece = board.piece_at(move.from_square)
+    #        to_piece = board.piece_at(move.to_square)
+    #    
+    #        if from_piece is not None and to_piece is not None:
+    #            capturing_piece = self.get_piece_value(from_piece)
+    #            captured_piece = self.get_piece_value(to_piece)
+    #            if board.turn is chess.WHITE:
+    #                final_material_balance = initial_material_balance - captured_piece + capturing_piece
+    #                if final_material_balance >= initial_material_balance:
+    #                    return final_material_balance
+    #            if board.turn is chess.BLACK:
+    #                final_material_balance = initial_material_balance + captured_piece - capturing_piece
+    #                if final_material_balance <= initial_material_balance:
+    #                    return final_material_balance
+    #
+    #    return 0  # If the move is not a capture, return False
                         
     def evaluate_board(self, board: chess.Board) -> int:
         # Evaluate board function
@@ -306,10 +306,10 @@ class IA:
             if board.is_checkmate() and not maximizing_player:
                 board.pop()
                 return move  # Win for the minimizing player
-
+            
             current_score = self.minimax(board, depth, alpha, beta, not maximizing_player)
             board.pop()
-
+            risk_score = self.calculate_risk_score(board)
             if maximizing_player:
                 current_score -= risk_score 
                 if current_score >= best_value:
@@ -322,7 +322,6 @@ class IA:
                     best_value = current_score
                     best_move = move
                 beta = min(beta, best_value)
-
             if beta <= alpha:
                 break
         print("best move : ", best_move)
@@ -333,7 +332,7 @@ class IA:
         if depth == 0 or board.is_game_over():
             return self.evaluate_board(board)
 
-        if not maximizing_player:
+        if maximizing_player:
             best_score = -float('inf')
             for move in board.legal_moves:
                 board.push(move)
@@ -378,7 +377,7 @@ class IA:
 
 ia = IA()
 game_fens = []
-depth = 2
+depth = 4
 potential_moves = [
     "e2e4",
     "d2d4",
@@ -386,39 +385,36 @@ potential_moves = [
     "g1f3",
     "b1c3"
 ]
-#<<<<<<< AI
-#board = chess.Board()
-#try:
-#    with open("game_fens.json", "w") as f:
-#        for _ in range(10): # Loop the game until it's over
-#            #user_move = self.read_from_json()  # Get the move from JSON
-#            #user_move = input("Enter your move: ")
-#           if board.is_repetition(3) or board.is_stalemate() or board.is_insufficient_material() or board.is_fifty_moves():
-#                print("Draw!")
-#                break
-#            if board.fullmove_number <= 1:
-#               board.push_san(random.choice(potential_moves))
-#            else:
-#                user_move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
-#                 board.push_san(str(user_move))  # Push the user's move
-#            print("white moved en dessous")   
-#            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
-#            print(board)
-#            if board.is_game_over():
-#                break
-#            move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
-#            ia.save_to_json(move)  # Save the move to JSON
-#            board.push(move)
-#            print("black moved en dessous")
-#            print(board)
-#            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
-#            
-#        json.dump(game_fens,f)
+board = chess.Board()
+try:
+    with open("game_fens.json", "w") as f:
+        while not board.is_game_over(): # Loop the game until it's over
+            #user_move = self.read_from_json()  # Get the move from JSON
+            #user_move = input("Enter your move: ")
+            if board.is_repetition(3) or board.is_stalemate() or board.is_insufficient_material() or board.is_fifty_moves():
+                print("Draw!")
+                break
+            if board.fullmove_number <= 1:
+               board.push_san(random.choice(potential_moves))
+            else:
+                user_move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+                board.push_san(str(user_move))  # Push the user's move
+            print("white moved en dessous")   
+            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
+            print(board)
+            if board.is_game_over():
+                break
+            move = ia.choose_move(board, depth, -float('inf'), float('inf'), board.turn)
+            board.push(move)
+            print("black moved en dessous")
+            print(board)
+            game_fens.append(str((board.peek()))+ ": " + str(ia.evaluate_board(board)))
+            
+        json.dump(game_fens,f)
+   
+   
+except KeyboardInterrupt:
+    pass
+finally:
+    print("bien ouej")
     
-    
-#except KeyboardInterrupt:
-#    pass
-#finally:
-#    print("bien ouej")
-#=======
-#>>>>>>> main
