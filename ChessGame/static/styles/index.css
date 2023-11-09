@@ -80,6 +80,7 @@ body section > h2 {
     position: relative;
     z-index : 1;
     color: rgb(176, 203, 227);
+    text-align: center;
 }
 
 .ai p:before, .puzzle p:before {
