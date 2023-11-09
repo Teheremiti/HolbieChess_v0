@@ -248,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mode === '1v1') {
       board.orientation('white');
     }
+    $congratulations.text('');
   })
 
   /*window.addEventListener('resize', () => {
