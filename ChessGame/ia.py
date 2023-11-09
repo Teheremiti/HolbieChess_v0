@@ -334,7 +334,7 @@ class IA:
         if depth == 0 or board.is_game_over():
             return self.evaluate_board(board)
 
-        if not maximizing_player:
+        if maximizing_player:
             best_score = -float('inf')
             for move in board.legal_moves:
                 board.push(move)
@@ -379,7 +379,7 @@ class IA:
 
 ia = IA()
 game_fens = []
-depth = 1
+depth = 3
 potential_moves = [
     "e2e4",
     "d2d4",
