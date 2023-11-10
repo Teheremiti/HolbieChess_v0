@@ -12,19 +12,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
         integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" type="text/css" href="../static/styles/header.css">
-    <link rel="stylesheet" type="text/css" href="../static/styles/body.css">
-    <link rel="stylesheet" type="text/css" href="../static/styles/footer.css">
-    <link rel="stylesheet" type="text/css" href="../static/styles/play.css">
+    <link rel="stylesheet" type="text/css" href="static/styles/header.css">
+    <link rel="stylesheet" type="text/css" href="static/styles/body.css">
+    <link rel="stylesheet" type="text/css" href="static/styles/footer.css">
+    <link rel="stylesheet" type="text/css" href="static/styles/play.css">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script type="module" src="../static/scripts/play.js"></script>
+    <script type="module" src="static/scripts/play.js"></script>
 </head>
 
 <body>
     <header>
         <a href="./index.html">
             <div class="logo">
-                <img src="../img/holbielogo.png" alt="holbielogo">
+                <img src="img/holbielogo.png" alt="holbielogo">
             </div>
             <h1> Holbie Chess </h1>
         </a>
@@ -35,9 +35,9 @@
         <div class="side_banner">
             <ul>
                 <li>Play</li>
-                <a href="./play.html?mode=puzzle"><li>Daily Puzzle</li></a>
-                <a href="./index.html#news"><li>News</li></a>
-                <a href="./index.html#about"><li>About us</li></a>
+                <a href="play.html?mode=puzzle"><li>Daily Puzzle</li></a>
+                <a href="index.html#news"><li>News</li></a>
+                <a href="index.html#about"><li>About us</li></a>
             </ul>
         </div>
 
@@ -56,9 +56,9 @@
 
                 <section class="aside">
                     <div class="gamemode">
-                        <button type="button" onclick="window.location.replace('./play.html?mode=1v1')"> 1v1 </button>
-                        <button type="button" onclick="window.location.replace('./play.html?mode=computer')"> Computer </button>
-                        <button type="button" onclick="window.location.replace('./play.html?mode=puzzle')"> Daily puzzle </button>
+                        <button type="button" onclick="window.location.replace('play.html?mode=1v1')"> 1v1 </button>
+                        <button type="button" onclick="window.location.replace('play.html?mode=computer')"> Computer </button>
+                        <button type="button" onclick="window.location.replace('play.html?mode=puzzle')"> Daily puzzle </button>
                     </div>
                     <div class="history"></div>
 
