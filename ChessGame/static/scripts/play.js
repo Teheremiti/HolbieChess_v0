@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const blackDraggableOnly = piece.search(/^b/) !== -1;
 
     if (mode === 'puzzle') {
-      if ((isGameOver() ||
+      if ((isGameOver() || puzzleComplete ||
           (orientation === 'white' && blackDraggableOnly) ||
           (orientation === 'black' && whiteDraggableOnly))) {
             return false;
@@ -180,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         $congratulations.html('<p>Great job! Come back tomorrow</br>or visit\
                                <a href="https://lichess.org/training/daily" target="_blank">Lichess.org</a> for more problems');
+        puzzleComplete = true;
       }
     }
 
@@ -200,6 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (mode === 'puzzle') {
     // The following code doesn't wait for loadDailyPuzzle() to finish
     // --> if game.json was not empty, the jsonData will be its previous content
+    var puzzleComplete = false;
     loadDailyPuzzle();
     const jsonData = localStorage.getItem('game.json');
     console.log('afterLoad', jsonData);
