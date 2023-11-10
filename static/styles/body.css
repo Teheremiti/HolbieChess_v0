@@ -19,19 +19,15 @@ body .side_banner {
 
 body .side_banner ul {
     position: sticky;
-    top: 4rem;
+    top: 8rem;
     color: white;
     list-style-type: none;
     margin: 0;
     padding: 0;
-    height: 550px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-}
-
-body .side_banner ul {
-    height: 550px;
+    justify-content: flex-start;
+    gap: 50px;
 }
 
 body .side_banner li {
@@ -39,7 +35,7 @@ body .side_banner li {
     padding: 1rem 0;
     text-align: center;
     position: relative;
-    z-index : 1;
+    z-index: 1;
     overflow: hidden;
     transition: 0.2s;
 }
@@ -53,10 +49,10 @@ body .side_banner li:hover {
 body .side_banner li:before {
     content: "";
     position: absolute;
-    left    : 10%;
-    bottom  : 0;
-    height  : 95%;
-    width   : 80%;
+    left: 10%;
+    bottom: 0;
+    height: 95%;
+    width: 80%;
     border-bottom: 1px solid aquamarine;
 }
 
