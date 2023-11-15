@@ -1,6 +1,18 @@
+@import url(https://db.onlinewebfonts.com/c/bccb551ca28ce4ff7765acd2a89d06ce?family=ITC+Franklin+Gothic+LT+Medium);
+
+@font-face {
+    font-family: "ITC Franklin Gothic LT Medium";
+    src: url("https://db.onlinewebfonts.com/t/bccb551ca28ce4ff7765acd2a89d06ce.eot");
+    src: url("https://db.onlinewebfonts.com/t/bccb551ca28ce4ff7765acd2a89d06ce.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/bccb551ca28ce4ff7765acd2a89d06ce.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/bccb551ca28ce4ff7765acd2a89d06ce.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/bccb551ca28ce4ff7765acd2a89d06ce.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/bccb551ca28ce4ff7765acd2a89d06ce.svg#ITC Franklin Gothic LT Medium")format("svg");
+}
 * {
     margin: 0;
     padding: 0;
+    font-family: "ITC Franklin Gothic LT Medium";
 }
 
 * a {
